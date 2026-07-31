@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;800&amp;family=Baloo+2:wght@400;600;800&amp;family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..700;1,6..96,400..700&amp;display=swap">
+<link rel="stylesheet" href="theme.css">
+<script src="page-extras.js"></script>
+<script src="image-slot.js"></script>
+<script src="collages.js"></script>
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; max-width: 100vw; overflow-x: hidden; }
+  @media (max-width: 1080px) { .metrics { grid-template-columns: repeat(2,minmax(0,1fr)) !important; } }
+  @media (max-width: 820px) {
+    .rnav { flex-wrap: wrap; gap: 14px !important; padding-left: 20px !important; padding-right: 20px !important; }
+    .canvas { min-height: 0 !important; }
+    .metrics { grid-template-columns: repeat(2,minmax(0,1fr)) !important; }
+    .widget { position: static !important; width: 100% !important; height: auto !important; margin-bottom: 16px; }
+    .hero-grid { grid-template-columns: 1fr !important; gap: 32px !important; }
+    .masthead-row { align-items: flex-start !important; }
+    .masthead-row > div:last-child { align-items: flex-start !important; width: 100%; }
+    .masthead-row [style*="letter-spacing: 0.3em"] { font-size: 9px !important; letter-spacing: 0.14em !important; white-space: normal !important; }
+  }
+  @media (max-width: 480px) { .metrics { grid-template-columns: 1fr !important; } }
+</style>
+</helmet>
+  <svg aria-hidden="true" width="0" height="0" style="position:absolute" focusable="false"><filter id="hxWobble"><feTurbulence type="fractalNoise" baseFrequency="0.028" numOctaves="2" seed="7" result="n"></feTurbulence><feDisplacementMap in="SourceGraphic" in2="n" scale="7" xChannelSelector="R" yChannelSelector="G"></feDisplacementMap></filter></svg>
+<div data-theme="{{ themeName }}" data-main="{{ mainTheme }}" style="min-height:100vh;display:flex;flex-direction:column;background:var(--bg);color:var(--text);font-family:var(--font)">
+
+  <nav class="rnav" style="display:flex;align-items:center;gap:28px;padding:16px 32px;border-bottom:2px solid var(--divider)">
+    <div style="font-family: Times New Roman; font-weight: 600; font-size: 23px; letter-spacing: 0.01em; margin-right: auto">SIBS</div>
+    <a href="Dashboard.dc.html" aria-current="page" style="color:var(--accent);text-decoration:none;font-size:14px;font-weight:600">Dashboard</a>
+    <a href="Calendar.dc.html" style="color:var(--text);text-decoration:none;font-size:14px">Calendar</a>
+    <a href="Budget.dc.html" style="color:var(--text);text-decoration:none;font-size:14px">Budget</a>
+    <a href="University.dc.html" style="color:var(--text);text-decoration:none;font-size:14px">University</a>
+    <a href="Health.dc.html" style="color:var(--text);text-decoration:none;font-size:14px">Health</a>
+    <a href="Trophies.dc.html" style="color:var(--text);text-decoration:none;font-size:14px">Trophies</a>
+  </nav>
+
+  <section style="padding:40px 32px 0">
+    <div class="masthead-row" style="display:flex;align-items:flex-end;justify-content:space-between;gap:30px;flex-wrap:wrap">
+      <div style="min-width:0">
+        <div style="font-size:11px;letter-spacing:0.3em;text-transform:uppercase;color:var(--accent);font-weight:700;white-space:nowrap">{{ todayLabel }} · Issue no. 07</div>
+        <h1 style="margin: 12px 0 0; font-family: Times New Roman; font-weight: 500; font-size: clamp(48px,7.2vw,96px); line-height: 0.88; letter-spacing: -0.03em">{{ greeting }},<br><span style="font-style:italic;color:var(--accent)">Sibs</span></h1>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:10px">
+        <div style="display:flex;gap:8px;align-items:center">
+          <select value="{{ mainTheme }}" onChange="{{ setMain }}" aria-label="Main theme" title="Main theme" style="font-family:var(--font);font-size:12px;padding:6px 10px;background:var(--surface2);color:var(--text);border:1px solid var(--divider);border-radius:999px;cursor:pointer"><sc-for list="{{ mainOptions }}" as="m" hint-placeholder-count="3"><option value="{{ m.value }}">{{ m.label }}</option></sc-for></select>
+    <select value="{{ themeName }}" onChange="{{ setTheme }}" aria-label="Colour theme" title="Colour theme" style="font-family:var(--font);font-size:12px;padding:8px 12px;background:var(--surface2);color:var(--text);border:1px solid var(--divider);border-radius:999px;cursor:pointer"><sc-for list="{{ themeOptions }}" as="o" hint-placeholder-count="3"><option value="{{ o.value }}">{{ o.label }}</option></sc-for></select>
+          <button onClick="{{ resetLayout }}" style="font-family:var(--font);font-size:12px;padding:8px 14px;cursor:pointer;background:transparent;color:var(--muted-strong);border:1px solid var(--divider);border-radius:999px">Reset layout</button>
+        </div>
+        <sc-if value="{{ hasHidden }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end;max-width:420px">
+            <sc-for list="{{ hiddenList }}" as="h" hint-placeholder-count="2">
+              <button data-id="{{ h.id }}" onClick="{{ showWidget }}" style="font-family:var(--font);font-size:11px;padding:5px 12px;cursor:pointer;background:var(--surface2);color:var(--muted-strong);border:1px dashed var(--divider);border-radius:999px">+ {{ h.title }}</button>
+            </sc-for>
+          </div>
+        </sc-if>
+      </div>
+    </div>
+    <div style="height:24px;margin-top:28px;background:repeating-conic-gradient(var(--accent-deep) 0% 25%, transparent 0% 50%) 0 0 / 24px 24px;opacity:0.55"></div>
+  </section>
+
+  <section class="hero-grid" style="display:grid;grid-template-columns:minmax(300px,1.02fr) minmax(320px,1fr);gap:48px;align-items:center;padding:44px 32px 0">
+    <div>
+      <div style="font-size:11px;letter-spacing:0.28em;text-transform:uppercase;color:var(--accent-deep);font-weight:700;margin-bottom:16px">Today's edit</div>
+      <h2 style="margin: 0 0 18px; font-family: Times New Roman; font-weight: 500; font-size: clamp(30px,3.4vw,48px); line-height: 1.04; letter-spacing: -0.015em; text-wrap: pretty">{{ editHeadline }}</h2>
+      <p style="margin:0 0 26px;font-size:15px;line-height:1.75;max-width:46ch;color:var(--muted-strong);text-wrap:pretty">{{ editSub }}</p>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:26px">
+        <span style="display:inline-flex;align-items:center;font-size:11px;letter-spacing:0.06em;text-transform:uppercase;font-weight:700;padding:8px 16px;border-radius:999px;background:var(--metric-4);color:var(--metric-ink)">{{ tasksPillText }}</span>
+        <span style="display:inline-flex;align-items:center;font-size:11px;letter-spacing:0.06em;text-transform:uppercase;font-weight:700;padding:8px 16px;border-radius:999px;background:var(--metric-3);color:var(--metric-ink)">{{ medsStreak }}-day meds streak</span>
+      </div>
+      <div style="display:flex;gap:12px;flex-wrap:wrap">
+        <a href="Calendar.dc.html" style="font-size:13px;font-weight:700;letter-spacing:0.02em;padding:13px 26px;border-radius:999px;background:var(--accent);color:var(--surface2);text-decoration:none">See the week →</a>
+        <a href="Health.dc.html" style="font-size:13px;font-weight:700;letter-spacing:0.02em;padding:13px 26px;border-radius:999px;background:transparent;color:var(--muted-strong);border:1px solid var(--divider);text-decoration:none">Log meds</a>
+      </div>
+    </div>
+    <div style="position:relative;padding:26px 26px 0">
+      <div style="position:relative;background:rgba(91,58,46,0.05);border:1px solid rgba(91,58,46,0.10);border-radius:2rem;padding:9px">
+        <div style="position:relative;overflow:hidden;border-radius:calc(2rem - 9px);background:{{ collage.base }};min-height:452px;box-shadow:inset 0 1px 1px rgba(255,255,255,0.5)">
+          <div aria-hidden="true" style="position:absolute;inset:0;mix-blend-mode:multiply;background:{{ collage.l1 }}"></div>
+          <div aria-hidden="true" style="position:absolute;inset:0;mix-blend-mode:multiply;background:{{ collage.l2 }}"></div>
+          <div aria-hidden="true" style="position:absolute;inset:0;mix-blend-mode:multiply;opacity:0.72;background:{{ collage.l3 }}"></div>
+          <div aria-hidden="true" style="position:absolute;inset:18px;border-radius:14px;border:{{ collage.frameWidth }} solid {{ collage.frameInk }};filter:url(#hxWobble)"></div>
+          <div aria-hidden="true" style="position:absolute;inset:0;background-size:cover;background-position:center;mix-blend-mode:multiply;opacity:{{ collage.artOpacity }};background-image:{{ collage.artCss }}"></div>
+          <div aria-hidden="true" style="position:absolute;inset:0;pointer-events:none;opacity:0.16;background-image:repeating-radial-gradient(circle at 17% 29%,rgba(0,0,0,0.22) 0 0.6px,rgba(0,0,0,0) 0.6px 3.1px),repeating-radial-gradient(circle at 71% 63%,rgba(0,0,0,0.18) 0 0.5px,rgba(0,0,0,0) 0.5px 2.3px),repeating-radial-gradient(circle at 43% 88%,rgba(255,255,255,0.16) 0 0.5px,rgba(255,255,255,0) 0.5px 2.7px);background-size:3.1px 3.1px,2.3px 2.3px,2.7px 2.7px"></div>
+
+          <div style="position:relative;padding:34px 30px 26px;display:flex;flex-direction:column;justify-content:space-between;min-height:452px;gap:20px">
+            <div style="background:{{ collage.plate }};border-radius:18px;padding:20px 22px">
+              <span style="display:inline-block;padding:5px 13px;border-radius:999px;background:{{ collage.ink }};color:{{ collage.plate }};font-size:10px;letter-spacing:0.2em;text-transform:uppercase;font-weight:500">Issue no. 07</span>
+              <div style="font-family: Times New Roman; font-weight: 500; font-size: clamp(34px,3.6vw,52px); line-height: 0.98; letter-spacing: -0.02em; margin-top: 20px; color: {{ collage.ink }}; max-width: 15ch; text-wrap: pretty">Nine mornings, not one missed.</div>
+            </div>
+            <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:20px;background:{{ collage.plate }};border-radius:18px;padding:20px 22px">
+              <div style="font-size:12px;line-height:1.55;color:{{ collage.ink }};opacity:0.8;max-width:20ch">Longest run since you started tracking in March.</div>
+              <div style="flex:none;width:104px;height:104px;border-radius:50%;background:{{ collage.sticker }};border:2px solid {{ collage.ink }};display:flex;align-items:center;justify-content:center;transform:rotate(-7deg)">
+                <span style="font-family:'Bodoni Moda',Georgia,serif;font-weight:500;font-size:52px;line-height:1;color:{{ collage.stickerInk }};font-variant-numeric:tabular-nums">{{ medsStreak }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="metrics" style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px;padding:52px 32px 0">
+      <div style="background:var(--metric-1);border-radius:24px;padding:24px;color:var(--metric-ink);position:relative;overflow:hidden">
+        <div style="position:absolute;right:-26px;top:-26px;width:96px;height:96px;border-radius:50%;background:rgba(255,255,255,0.30)"></div>
+        <div style="font-size:10px;letter-spacing:0.24em;text-transform:uppercase;font-weight:700;opacity:0.72;position:relative">Open today</div>
+        <div style="font-family: Trebuchet MS; font-weight: 500; font-size: 56px; line-height: 1; margin: 10px 0 6px; position: relative">{{ tasksLeft }}</div>
+        <div style="font-size:12px;line-height:1.5;opacity:0.78;position:relative">Tasks still waiting on you</div>
+      </div>
+      <div style="background:var(--metric-2);border-radius:24px;padding:24px;color:var(--metric-ink);position:relative;overflow:hidden">
+        <div style="position:absolute;right:-26px;top:-26px;width:96px;height:96px;border-radius:50%;background:rgba(255,255,255,0.30)"></div>
+        <div style="font-size:10px;letter-spacing:0.24em;text-transform:uppercase;font-weight:700;opacity:0.72;position:relative">Days in a row</div>
+        <div style="font-family: Trebuchet MS; font-weight: 500; font-size: 56px; line-height: 1; margin: 10px 0 6px; position: relative">{{ medsStreak }}</div>
+        <div style="font-size:12px;line-height:1.5;opacity:0.78;position:relative">Meds taken, morning and night</div>
+      </div>
+      <div style="background:var(--metric-3);border-radius:24px;padding:24px;color:var(--metric-ink);position:relative;overflow:hidden">
+        <div style="position:absolute;right:-26px;top:-26px;width:96px;height:96px;border-radius:50%;background:rgba(255,255,255,0.30)"></div>
+        <div style="font-size:10px;letter-spacing:0.24em;text-transform:uppercase;font-weight:700;opacity:0.72;position:relative">Days of supply</div>
+        <div style="font-family: Trebuchet MS; font-weight: 500; font-size: 56px; line-height: 1; margin: 10px 0 6px; position: relative">{{ daysSupply }}</div>
+        <div style="font-size:12px;line-height:1.5;opacity:0.78;position:relative">Reorder by {{ orderByDate }}</div>
+      </div>
+      <div style="background:var(--metric-4);border-radius:24px;padding:24px;color:var(--metric-ink);position:relative;overflow:hidden">
+        <div style="position:absolute;right:-26px;top:-26px;width:96px;height:96px;border-radius:50%;background:rgba(255,255,255,0.30)"></div>
+        <div style="font-size:10px;letter-spacing:0.24em;text-transform:uppercase;font-weight:700;opacity:0.72;position:relative">Unread</div>
+        <div style="font-family: Trebuchet MS; font-weight: 500; font-size: 56px; line-height: 1; margin: 10px 0 6px; position: relative">{{ unreadCount }}</div>
+        <div style="font-size:12px;line-height:1.5;opacity:0.78;position:relative">{{ needsReplyText }}</div>
+      </div>
+  </section>
+
+  <div class="canvas" ref="{{ canvasRef }}" style="position:relative;margin:{{ mainPad }};min-height:2000px">
+
+    <div class="widget" style="{{ w.agenda.style }}">
+      <div data-id="agenda" onMouseDown="{{ startDrag }}" style="cursor:grab;display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid var(--divider);user-select:none;flex:none;background:var(--surface);border-radius:12px 12px 0 0">
+        <span style="flex:1;font-weight:800;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Agenda</span>
+        <button data-id="agenda" onClick="{{ toggleMinimize }}" aria-label="Minimize" style="width:22px;height:22px;flex:none;font-family:var(--font);font-size:14px;line-height:1;background:transparent;border:1px solid var(--divider);border-radius:6px;color:var(--text);cursor:pointer;padding:0">{{ w.agenda.minIcon }}</button>
+        <button data-id="agenda" onClick="{{ hideWidget }}" aria-label="Hide" style="width:22px;height:22px;flex:none;font-family:var(--font);font-size:14px;line-height:1;background:transparent;border:1px solid var(--divider);border-radius:6px;color:var(--text);cursor:pointer;padding:0">×</button>
+      </div>
+      <sc-if value="{{ w.agenda.open }}" hint-placeholder-val="{{ true }}">
+        <div style="padding:14px 16px;overflow:auto;flex:1">
+          <div style="display:flex;flex-direction:column;gap:0">
+            <sc-for list="{{ agenda }}" as="item" hint-placeholder-count="5">
+              <div style="display:flex;align-items:center;gap:12px;padding:{{ agendaItemPad }};border-bottom:1px solid var(--hairline)">
+                <button data-id="{{ item.id }}" onClick="{{ toggleAgenda }}" aria-label="Toggle done" style="width:18px;height:18px;flex:none;display:flex;align-items:center;justify-content:center;border:{{ item.checkBorder }};border-radius:6px;background:{{ item.doneBg }};color:var(--accent);font-size:16px;line-height:1;cursor:pointer;padding:0">{{ item.mark }}</button>
+                <input value="{{ item.time }}" data-id="{{ item.id }}" data-field="time" onChange="{{ editAgenda }}" style="width:76px;flex:none;font-size:12px;opacity:0.7;border:1px solid transparent;border-radius:6px;background:transparent;color:var(--text);font-family:var(--font);padding:4px 6px">
+                <input value="{{ item.title }}" data-id="{{ item.id }}" data-field="title" onChange="{{ editAgenda }}" style="flex:1;min-width:0;font-size:14px;border:1px solid transparent;border-radius:6px;background:transparent;color:var(--text);font-family:var(--font);text-decoration:{{ item.strike }};opacity:{{ item.textOpacity }};padding:4px 6px">
+                <span style="font-size:10px;letter-spacing:0.06em;text-transform:uppercase;padding:3px 9px;border-radius:999px;background:{{ item.tagBg }};color:{{ item.tagColor }}">{{ item.tagLabel }}</span>
+                <button data-id="{{ item.id }}" onClick="{{ removeAgenda }}" aria-label="Remove" style="flex:none;font-size:15px;line-height:1;color:var(--muted);background:transparent;border:none;cursor:pointer;padding:2px 4px">×</button>
+              </div>
+            </sc-for>
+          </div>
+          <div style="display:flex;gap:8px;margin-top:10px">
+            <input value="{{ newAgTime }}" onChange="{{ onAgTime }}" placeholder="Time" style="width:76px;flex:none;font-family:var(--font);font-size:13px;padding:7px 8px;border:1px solid var(--divider);border-radius:8px;background:var(--surface);color:var(--text)">
+            <input value="{{ newAgTitle }}" onChange="{{ onAgTitle }}" placeholder="Add to agenda…" style="flex:1;min-width:0;font-family:var(--font);font-size:13px;padding:7px 10px;border:1px solid var(--divider);border-radius:8px;background:var(--surface);color:var(--text)">
+            <button onClick="{{ addAgenda }}" style="font-family:var(--font);font-weight:800;font-size:13px;padding:7px 14px;cursor:pointer;background:var(--accent);color:var(--bg);border:none;border-radius:8px">Add</button>
+          </div>
+        </div>
+      </sc-if>
+      <div data-id="agenda" onMouseDown="{{ startResize }}" style="position:absolute;right:2px;bottom:2px;width:14px;height:14px;cursor:nwse-resize;opacity:0.45;background:linear-gradient(135deg,transparent 50%,var(--muted) 50%);border-radius:0 0 4px 0"></div>
+    </div>
+
+    <div class="widget" style="{{ w.todo.style }}">
+      <div data-id="todo" onMouseDown="{{ startDrag }}" style="cursor:grab;display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid var(--divider);user-select:none;flex:none;background:var(--surface);border-radius:12px 12px 0 0">
+        <span style="flex:1;font-weight:800;font-size:13px">To-do · {{ todoCount }} left</span>
+        <button data-id="todo" onClick="{{ toggleMinimize }}" aria-label="Minimize" style="width:22px;height:22px;flex:none;font-family:var(--font);font-size:14px;line-height:1;background:transparent;border:1px solid var(--divider);border-radius:6px;color:var(--text);cursor:pointer;padding:0">{{ w.todo.minIcon }}</button>
+        <button data-id="todo" onClick="{{ hideWidget }}" aria-label="Hide" style="width:22px;height:22px;flex:none;font-family:var(--font);font-size:14px;line-height:1;background:transparent;border:1px solid var(--divider);border-radius:6px;color:var(--text);cursor:pointer;padding:0">×</button>
+      </div>
+      <sc-if value="{{ w.todo.open }}" hint-placeholder-val="{{ true }}">
+        <div style="padding:14px 16px;overflow:auto;flex:1">
+          <div style="display:flex;gap:8px;margin-bottom:12px">
+            <input value="{{ newTodo }}" onChange="{{ onNewTodo }}" placeholder="Add a task…" style="flex:1;min-width:0;font-family:var(--font);font-size:13px;padding:7px 10px;border:1px solid var(--divider);border-radius:8px;background:var(--surface);color:var(--text)">
+            <button onClick="{{ addTodo }}" style="font-family:var(--font);font-weight:800;font-size:13px;padding:7px 14px;cursor:pointer;background:var(--accent);color:var(--bg);border:none;border-radius:8px">Add</button>
+          </div>
+          <div style="display:flex;flex-direction:column">
+            <sc-for list="{{ todos }}" as="t" hint-placeholder-count="6">
+              <div style="display:flex;align-items:center;gap:12px;padding:9px 0;border-bottom:1px solid var(--hairline)">
+                <button data-id="{{ t.id }}" onClick="{{ toggleTodo }}" aria-label="Toggle task" style="width:18px;height:18px;flex:none;display:flex;align-items:center;justify-content:center;border:{{ t.checkBorder }};border-radius:6px;background:{{ t.doneBg }};color:var(--accent);font-size:16px;line-height:1;cursor:pointer;padding:0">{{ t.mark }}</button>
+                <div class="hx-task" style="flex:1;font-size:13px;text-decoration:{{ t.strike }};opacity:{{ t.opacity }}">{{ t.text }}</div>
+                <button data-id="{{ t.id }}" onClick="{{ removeTodo }}" aria-label="Remove task" style="flex:none;font-size:16px;line-height:1;color:var(--muted);background:transparent;border:none;cursor:pointer;padding:2px 4px">×</button>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </sc-if>
+      <div data-id="todo" onMouseDown="{{ startResize }}" style="position:absolute;right:2px;bottom:2px;width:14px;height:14px;cursor:nwse-resize;opacity:0.45;background:linear-gradient(135deg,transparent 50%,var(--muted) 50%);border-radius:0 0 4px 0"></div>
+    </div>
+
+    <div class="widget" style="{{ w.trend.style }}">
+      <div data-id="trend" onMouseDown="{{ startDrag }}" style="cursor:grab;display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid var(--divider);user-select:none;flex:none;background:var(--surface);border-radius:12px 12px 0 0">
+        <span style="flex:1;font-weight:800;font-size:13px">ADHD trend setter</span>
+        <button data-id="trend" onClick="{{ toggleMinimize }}" aria-label="Minimize" style="width:22px;height:22px;flex:none;font-family:var(--font);font-size:14px;line-height:1;background:transparent;border:1px solid var(--divider);border-radius:6px;color:var(--text);cursor:pointer;padding:0">{{ w.trend.minIcon }}</button>
+        <button data-id="trend" onClick="{{ hideWidget }}" aria-label="Hide" style="width:22px;height:22px;flex:none;font-family:var(--font);font-size:14px;line-height:1;background:transparent;border:1px solid var(--divider);border-radius:6px;color:var(--text);cursor:pointer;padding:0">×</button>
+      </div>
+      <sc-if value="{{ w.trend.open }}" hint-placeholder-val="{{ true }}">
+        <div style="padding:14px 16px;overflow:auto;flex:1">
+          <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:14px">
+            <sc-for list="{{ trendBars }}" as="tb" hint-placeholder-count="5">
+              <div>
+                <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px"><span>{{ tb.label }}</span><span style="opacity:0.6">{{ tb.value }}/10</span></div>
+                <input type="range" min="0" max="10" value="{{ tb.value }}" data-key="{{ tb.key }}" onChange="{{ onTrend }}" onInput="{{ onTrend }}" style="width:100%;accent-color:var(--accent)">
+              </div>
+            </sc-for>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px">
+            <button onClick="{{ logTrend }}" style="font-family:var(--font);font-weight:800;font-size:13px;padding:8px 16px;cursor:pointer;background:var(--accent);color:var(--bg);border:none;border-radius:8px">Log today</button>
+            <sc-if value="{{ trendMsg }}" hint-placeholder-val="{{ false }}"><span class="hx-msg" style="font-size:12px;opacity:0.6">{{ trendMsg }}</span></sc-if>
+          </div>
+        </div>
+      </sc-if>
+      <div data-id="trend" onMouseDown="{{ startResize }}" style="position:absolute;right:2px;bottom:2px;width:14px;height:14px;cursor:nwse-resize;opacity:0.45;background:linear-gradient(135deg,transparent 50%,var(--muted) 50%);border-radius:0 0 4px 0"></div>
+    </div>
+
+    <div class="widget" style="{{ w.meds.style }}">
+      <div data-id="meds" onMouseDown="{{ startDrag }}" style="cursor:grab;display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid var(--divider);user-select:none;flex:none;background:var(--surface);border-radius:12px 12px 0 0">
+        <span style="flex:1;font-weight:800;font-size:13px">Meds &amp; supply</span>
+        <button data-id="meds" onClick="{{ toggleMinimize }}" aria-label="Minimize" style="width:22px;height:22px;flex:none;font-family:var(--font);font-size:14px;line-height:1;background:transparent;border:1px solid var(--divider);border-radius:6px;color:var(--text);cursor:pointer;padding:0">{{ w.meds.minIcon }}</button>
+        <button data-id="meds" onClick="{{ hideWidget }}" aria-label="Hide" style="width:22px;height:22px;flex:none;font-family:var(--font);font-size:14px;line-height:1;background:transparent;border:1px solid var(--divider);border-radius:6px;color:var(--text);cursor:pointer;padding:0">×</button>
+      </div>
+      <sc-if value="{{ w.meds.open }}" hint-placeholder-val="{{ true }}">
+        <div style="padding:18px 18px 20px;overflow:auto;flex:1">
+          <div style="display:flex;gap:8px;margin-bottom:20px">
+            <button onClick="{{ toggleMedsAM }}" style="flex:1;font-family:var(--font);font-weight:800;font-size:12px;letter-spacing:0.08em;padding:12px 0;cursor:pointer;background:{{ amBg }};color:{{ amColor }};border:1.5px solid var(--divider);border-radius:999px;transition:background-color 120ms ease-out">AM {{ amMark }}</button>
+            <button onClick="{{ toggleMedsPM }}" style="flex:1;font-family:var(--font);font-weight:800;font-size:12px;letter-spacing:0.08em;padding:12px 0;cursor:pointer;background:{{ pmBg }};color:{{ pmColor }};border:1.5px solid var(--divider);border-radius:999px;transition:background-color 120ms ease-out">PM {{ pmMark }}</button>
+          </div>
+          <div style="background:var(--surface2);border-radius:14px;padding:14px 16px;margin-bottom:18px">
+            <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px">
+              <span style="font-size:10px;letter-spacing:0.12em;text-transform:uppercase;font-weight:700;opacity:0.55">Streak</span>
+              <span style="font-size:13px;font-weight:700">{{ medsStreak }} <span style="font-weight:400;opacity:0.55;font-size:12px">days</span></span>
+            </div>
+            <div style="display:flex;gap:5px">
+              <sc-for list="{{ medsDots }}" as="day" hint-placeholder-count="7">
+                <div style="flex:1;height:16px;border:1px solid var(--divider);border-radius:5px;background:{{ day.bg }}"></div>
+              </sc-for>
+            </div>
+          </div>
+          <div style="background:var(--surface2);border-radius:14px;padding:16px">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px">
+              <div style="font-size:10px;letter-spacing:0.12em;text-transform:uppercase;font-weight:700;opacity:0.55">Supply</div>
+              <div style="display:flex;align-items:center;gap:6px">
+                <span style="font-size:11px;font-weight:700;padding:5px 12px;border-radius:999px;background:{{ orderBg }};color:{{ orderColor }}">{{ orderStatus }}</span>
+                <button onClick="{{ toggleMedsOrdered }}" style="font-family:var(--font);font-weight:700;font-size:11px;padding:5px 12px;cursor:pointer;background:{{ orderedBg }};color:{{ orderedColor }};border:1.5px solid var(--divider);border-radius:999px">{{ orderedLabel }}</button>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;font-size:12px;margin-bottom:14px;flex-wrap:wrap">
+              <span style="opacity:0.6">Left</span>
+              <input value="{{ medsLeft }}" onChange="{{ onMedsLeft }}" type="number" style="width:56px;font-family:var(--font);font-size:13px;padding:6px 8px;border:1px solid var(--divider);border-radius:8px;background:var(--surface2);color:var(--text)">
+              <span style="opacity:0.6">· per day</span>
+              <input value="{{ medsPerDay }}" onChange="{{ onMedsPerDay }}" type="number" style="width:48px;font-family:var(--font);font-size:13px;padding:6px 8px;border:1px solid var(--divider);border-radius:8px;background:var(--surface2);color:var(--text)">
+            </div>
+            <div style="font-size:12px;line-height:1.7;padding-top:12px;border-top:1px solid var(--hairline)"><span style="opacity:0.7">{{ daysSupply }} days left · runs out {{ runOutDate }}</span><br>Order by <strong>{{ orderByDate }}</strong></div>
+          </div>
+        </div>
+      </sc-if>
+      <div data-id="meds" onMouseDown="{{ startResize }}" style="position:absolute;right:2px;bottom:2px;width:14px;height:14px;cursor:nwse-resize;opacity:0.45;background:linear-gradient(135deg,transparent 50%,var(--muted) 50%);border-radius:0 0 4px 0"></div>
+    </div>
+
+    <div class="widget" style="{{ w.overwhelm.style }}">
+      <div data-id="overwhelm" onMouseDown="{{ startDrag }}" style="cursor:grab;display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid var(--divider);user-select:none;flex:none;background:var(--surface);border-radius:12px 12px 0 0">
+        <span style="flex:1;font-weight:800;font-size:13px">Feeling overwhelmed?</span>
+        <button data-id="overwhelm" onClick="{{ toggleMinimize }}" aria-label="Minimize" style="width:22px;height:22px;flex:none;font-family:var(--font);font-size:14px;line-height:1;background:transparent;border:1px solid var(--divider);border-radius:6px;color:var(--text);cursor:pointer;padding:0">{{ w.overwhelm.minIcon }}</button>
+        <button data-id="overwhelm" onClick="{{ hideWidget }}" aria-label="Hide" style="width:22px;height:22px;flex:none;font-family:var(--font);font-size:14px;line-height:1;background:transparent;border:1px solid var(--divider);border-radius:6px;color:var(--text);cursor:pointer;padding:0">×</button>
+      </div>
+      <sc-if value="{{ w.overwhelm.open }}" hint-placeholder-val="{{ true }}">
+        <div style="padding:14px 16px;overflow:auto;flex:1">
+          <p style="font-size:12px;opacity:0.7;margin:0 0 14px">Pick the thing that feels too big — here's a way in.</p>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px">
+            <sc-for list="{{ overwhelmTasks }}" as="t" hint-placeholder-count="3">
+              <button data-task="{{ t.name }}" onClick="{{ selectTask }}" style="font-family:var(--font);font-size:13px;padding:8px 14px;cursor:pointer;background:{{ t.bg }};color:{{ t.color }};border:1px solid var(--divider);border-radius:999px">{{ t.name }}</button>
+            </sc-for>
+          </div>
+          <sc-if value="{{ hasSteps }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <sc-for list="{{ steps }}" as="s" hint-placeholder-count="3">
+                <div style="display:flex;align-items:center;gap:10px">
+                  <button data-key="{{ s.key }}" onClick="{{ toggleStep }}" style="width:16px;height:16px;flex:none;border:1.5px solid var(--divider);border-radius:6px;background:{{ s.bg }};cursor:pointer;padding:0"></button>
+                  <div style="font-size:13px;text-decoration:{{ s.strike }};opacity:{{ s.opacity }}">{{ s.text }}</div>
+                </div>
+              </sc-for>
+            </div>
+          </sc-if>
+        </div>
+      </sc-if>
+      <div data-id="overwhelm" onMouseDown="{{ startResize }}" style="position:absolute;right:2px;bottom:2px;width:14px;height:14px;cursor:nwse-resize;opacity:0.45;background:linear-gradient(135deg,transparent 50%,var(--muted) 50%);border-radius:0 0 4px 0"></div>
+    </div>
+
+    <div class="widget" style="{{ w.deadlines.style }}">
+      <div data-id="deadlines" onMouseDown="{{ startDrag }}" style="cursor:grab;display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid var(--divider);user-select:none;flex:none;background:var(--surface);border-radius:12px 12px 0 0">
+        <span style="flex:1;font-weight:800;font-size:13px">Coming up</span>
+        <button data-id="deadlines" onClick="{{ toggleMinimize }}" aria-label="Minimize" style="width:22px;height:22px;flex:none;font-family:var(--font);font-size:14px;line-height:1;background:transparent;border:1px solid var(--divider);border-radius:6px;color:var(--text);cursor:pointer;padding:0">{{ w.deadlines.minIcon }}</button>
+        <button data-id="deadlines" onClick="{{ hideWidget }}" aria-label="Hide" style="width:22px;height:22px;flex:none;font-family:var(--font);font-size:14px;line-height:1;background:transparent;border:1px solid var(--divider);border-radius:6px;color:var(--text);cursor:pointer;padding:0">×</button>
+      </div>
+      <sc-if value="{{ w.deadlines.open }}" hint-placeholder-val="{{ true }}">
+        <div style="padding:14px 16px;overflow:auto;flex:1">
+          <div style="display:flex;flex-direction:column;gap:12px">
+            <sc-for list="{{ deadlines }}" as="d" hint-placeholder-count="3">
+              <div style="display:flex;gap:12px;align-items:baseline">
+                <div style="font-family:var(--font);font-weight:800;font-size:22px;color:{{ d.numColor }};width:34px;flex:none">{{ d.daysLeft }}</div>
+                <div>
+                  <div style="font-size:13px;font-weight:600">{{ d.title }}</div>
+                  <div style="font-size:11px;opacity:0.55">{{ d.course }} · days left</div>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+          <a href="Calendar.dc.html" style="display:inline-block;margin-top:12px;font-size:12px;color:var(--accent);text-decoration:none">See full calendar →</a>
+        </div>
+      </sc-if>
+      <div data-id="deadlines" onMouseDown="{{ startResize }}" style="position:absolute;right:2px;bottom:2px;width:14px;height:14px;cursor:nwse-resize;opacity:0.45;background:linear-gradient(135deg,transparent 50%,var(--muted) 50%);border-radius:0 0 4px 0"></div>
+    </div>
+
+    <div class="widget" style="{{ w.budget.style }}">
+      <div data-id="budget" onMouseDown="{{ startDrag }}" style="cursor:grab;display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid var(--divider);user-select:none;flex:none;background:var(--surface);border-radius:12px 12px 0 0">
+        <span style="flex:1;font-weight:800;font-size:13px">Budget snapshot</span>
+        <button data-id="budget" onClick="{{ toggleMinimize }}" aria-label="Minimize" style="width:22px;height:22px;flex:none;font-family:var(--font);font-size:14px;line-height:1;background:transparent;border:1px solid var(--divider);border-radius:6px;color:var(--text);cursor:pointer;padding:0">{{ w.budget.minIcon }}</button>
+        <button data-id="budget" onClick="{{ hideWidget }}" aria-label="Hide" style="width:22px;height:22px;flex:none;font-family:var(--font);font-size:14px;line-height:1;background:transparent;border:1px solid var(--divider);border-radius:6px;color:var(--text);cursor:pointer;padding:0">×</button>
+      </div>
+      <sc-if value="{{ w.budget.open }}" hint-placeholder-val="{{ true }}">
+        <div style="padding:14px 16px;overflow:auto;flex:1">
+          <sc-if value="{{ hasBudgetTotals }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;flex-direction:column;gap:10px">
+              <div style="display:flex;justify-content:space-between;font-size:13px"><span style="opacity:0.7">Income</span><span style="font-weight:700">{{ budIncome }}</span></div>
+              <div style="display:flex;justify-content:space-between;font-size:13px"><span style="opacity:0.7">Bills</span><span style="font-weight:700">{{ budBills }}</span></div>
+              <div style="display:flex;justify-content:space-between;font-size:13px"><span style="opacity:0.7">Left after bills</span><span style="font-weight:800;color:{{ budLeftColor }}">{{ budLeft }}</span></div>
+            </div>
+          </sc-if>
+          <sc-if value="{{ noBudgetTotals }}" hint-placeholder-val="{{ true }}">
+          <div style="display:flex;flex-direction:column;gap:12px">
+            <sc-for list="{{ moneySnapshot }}" as="c" hint-placeholder-count="3">
+              <div>
+                <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px">
+                  <span>{{ c.name }}</span>
+                  <span style="color:{{ c.textColor }}">£{{ c.spent }} / £{{ c.budget }}</span>
+                </div>
+                <div style="height:6px;border-radius:999px;background:var(--surface)">
+                  <div style="height:6px;width:{{ c.pct }}%;border-radius:999px;background:{{ c.barColor }}"></div>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+          </sc-if>
+          <a href="Budget.dc.html" style="display:inline-block;margin-top:14px;font-size:12px;color:var(--accent);text-decoration:none">View full budget →</a>
+        </div>
+      </sc-if>
+      <div data-id="budget" onMouseDown="{{ startResize }}" style="position:absolute;right:2px;bottom:2px;width:14px;height:14px;cursor:nwse-resize;opacity:0.45;background:linear-gradient(135deg,transparent 50%,var(--muted) 50%);border-radius:0 0 4px 0"></div>
+    </div>
+
+    <div class="widget" style="{{ w.bills.style }}">
+      <div data-id="bills" onMouseDown="{{ startDrag }}" style="cursor:grab;display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid var(--divider);user-select:none;flex:none;background:var(--surface);border-radius:12px 12px 0 0">
+        <span style="flex:1;font-weight:800;font-size:13px">Recurring bills</span>
+        <button data-id="bills" onClick="{{ toggleMinimize }}" aria-label="Minimize" style="width:22px;height:22px;flex:none;font-family:var(--font);font-size:14px;line-height:1;background:transparent;border:1px solid var(--divider);border-radius:6px;color:var(--text);cursor:pointer;padding:0">{{ w.bills.minIcon }}</button>
+        <button data-id="bills" onClick="{{ hideWidget }}" aria-label="Hide" style="width:22px;height:22px;flex:none;font-family:var(--font);font-size:14px;line-height:1;background:transparent;border:1px solid var(--divider);border-radius:6px;color:var(--text);cursor:pointer;padding:0">×</button>
+      </div>
+      <sc-if value="{{ w.bills.open }}" hint-placeholder-val="{{ true }}">
+        <div style="padding:14px 16px;overflow:auto;flex:1">
+          <div style="display:flex;flex-direction:column">
+            <sc-for list="{{ bills }}" as="b" hint-placeholder-count="4">
+              <div style="display:flex;align-items:center;gap:14px;padding:10px 0;border-bottom:1px solid var(--hairline)">
+                <div style="flex:1;font-size:13px;font-weight:600">{{ b.name }}</div>
+                <div style="font-size:13px;opacity:0.7;width:70px">{{ b.amountText }}</div>
+                <span style="font-size:10px;letter-spacing:0.06em;text-transform:uppercase;padding:3px 9px;border-radius:999px;background:{{ b.tagBg }};color:{{ b.tagColor }}">{{ b.due }}</span>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </sc-if>
+      <div data-id="bills" onMouseDown="{{ startResize }}" style="position:absolute;right:2px;bottom:2px;width:14px;height:14px;cursor:nwse-resize;opacity:0.45;background:linear-gradient(135deg,transparent 50%,var(--muted) 50%);border-radius:0 0 4px 0"></div>
+    </div>
+
+    <div class="widget" style="{{ w.mail.style }}">
+      <div data-id="mail" onMouseDown="{{ startDrag }}" style="cursor:grab;display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid var(--divider);user-select:none;flex:none;background:var(--surface);border-radius:12px 12px 0 0">
+        <span style="flex:1;font-weight:800;font-size:13px">Inbox · {{ unreadCount }} unread</span>
+        <button data-id="mail" onClick="{{ toggleMinimize }}" aria-label="Minimize" style="width:22px;height:22px;flex:none;font-family:var(--font);font-size:14px;line-height:1;background:transparent;border:1px solid var(--divider);border-radius:6px;color:var(--text);cursor:pointer;padding:0">{{ w.mail.minIcon }}</button>
+        <button data-id="mail" onClick="{{ hideWidget }}" aria-label="Hide" style="width:22px;height:22px;flex:none;font-family:var(--font);font-size:14px;line-height:1;background:transparent;border:1px solid var(--divider);border-radius:6px;color:var(--text);cursor:pointer;padding:0">×</button>
+      </div>
+      <sc-if value="{{ w.mail.open }}" hint-placeholder-val="{{ true }}">
+        <div style="padding:14px 16px;overflow:auto;flex:1">
+          <a href="https://mail.google.com" target="_blank" rel="noopener" style="display:inline-block;margin-bottom:12px;font-family:var(--font);font-weight:800;font-size:12px;padding:6px 12px;background:var(--accent);color:var(--bg);border-radius:8px;text-decoration:none">Connect Gmail</a>
+          <div style="display:flex;flex-direction:column">
+            <sc-for list="{{ emails }}" as="m" hint-placeholder-count="5">
+              <button data-id="{{ m.id }}" onClick="{{ markRead }}" style="display:flex;align-items:center;gap:14px;padding:{{ agendaItemPad }};border:none;border-bottom:1px solid var(--hairline);background:transparent;cursor:pointer;text-align:left;width:100%;font-family:var(--font);color:var(--text)">
+                <div style="width:8px;height:8px;flex:none;border-radius:50%;background:{{ m.dotBg }}"></div>
+                <div style="width:130px;flex:none;font-size:13px;font-weight:{{ m.nameWeight }};overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ m.from }}</div>
+                <div style="flex:1;font-size:13px;opacity:0.75;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ m.subject }}</div>
+                <span style="font-size:10px;letter-spacing:0.06em;text-transform:uppercase;padding:3px 9px;border-radius:999px;background:{{ m.tagBg }};color:{{ m.tagColor }}">{{ m.tagLabel }}</span>
+              </button>
+            </sc-for>
+          </div>
+        </div>
+      </sc-if>
+      <div data-id="mail" onMouseDown="{{ startResize }}" style="position:absolute;right:2px;bottom:2px;width:14px;height:14px;cursor:nwse-resize;opacity:0.45;background:linear-gradient(135deg,transparent 50%,var(--muted) 50%);border-radius:0 0 4px 0"></div>
+    </div>
+
+    <div class="widget" style="{{ w.followup.style }}">
+      <div data-id="followup" onMouseDown="{{ startDrag }}" style="cursor:grab;display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid var(--divider);user-select:none;flex:none;background:var(--surface);border-radius:12px 12px 0 0">
+        <span style="flex:1;font-weight:800;font-size:13px">Needs a reply</span>
+        <button data-id="followup" onClick="{{ toggleMinimize }}" aria-label="Minimize" style="width:22px;height:22px;flex:none;font-family:var(--font);font-size:14px;line-height:1;background:transparent;border:1px solid var(--divider);border-radius:6px;color:var(--text);cursor:pointer;padding:0">{{ w.followup.minIcon }}</button>
+        <button data-id="followup" onClick="{{ hideWidget }}" aria-label="Hide" style="width:22px;height:22px;flex:none;font-family:var(--font);font-size:14px;line-height:1;background:transparent;border:1px solid var(--divider);border-radius:6px;color:var(--text);cursor:pointer;padding:0">×</button>
+      </div>
+      <sc-if value="{{ w.followup.open }}" hint-placeholder-val="{{ true }}">
+        <div style="padding:14px 16px;overflow:auto;flex:1">
+          <p style="font-size:12px;opacity:0.6;margin:0 0 14px">No rush — just so they don't slip.</p>
+          <div style="display:flex;flex-direction:column;gap:12px">
+            <sc-for list="{{ needsReply }}" as="r" hint-placeholder-count="2">
+              <div style="border-left:2px solid var(--accent);padding-left:12px">
+                <div style="font-size:13px;font-weight:600">{{ r.from }}</div>
+                <div style="font-size:12px;opacity:0.7">{{ r.subject }}</div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </sc-if>
+      <div data-id="followup" onMouseDown="{{ startResize }}" style="position:absolute;right:2px;bottom:2px;width:14px;height:14px;cursor:nwse-resize;opacity:0.45;background:linear-gradient(135deg,transparent 50%,var(--muted) 50%);border-radius:0 0 4px 0"></div>
+    </div>
+
+    <sc-if value="{{ isTeddy }}" hint-placeholder-val="{{ false }}">
+      <div class="widget" style="{{ w.cups.style }}">
+        <div data-id="cups" onMouseDown="{{ startDrag }}" style="cursor:grab;display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid var(--divider);user-select:none;flex:none;background:var(--surface);border-radius:12px 12px 0 0">
+          <span style="flex:1;font-weight:800;font-size:13px">Daily cup</span>
+          <button data-id="cups" onClick="{{ toggleMinimize }}" aria-label="Minimize" style="width:22px;height:22px;flex:none;font-family:var(--font);font-size:14px;line-height:1;background:transparent;border:1px solid var(--divider);border-radius:6px;color:var(--text);cursor:pointer;padding:0">{{ w.cups.minIcon }}</button>
+          <button data-id="cups" onClick="{{ hideWidget }}" aria-label="Hide" style="width:22px;height:22px;flex:none;font-family:var(--font);font-size:14px;line-height:1;background:transparent;border:1px solid var(--divider);border-radius:6px;color:var(--text);cursor:pointer;padding:0">×</button>
+        </div>
+        <sc-if value="{{ w.cups.open }}" hint-placeholder-val="{{ true }}">
+          <div style="padding:14px 16px;overflow:auto;flex:1">
+            <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center">
+              <sc-for list="{{ cups }}" as="c" hint-placeholder-count="3">
+                <button data-kind="{{ c.kind }}" onClick="{{ addCup }}" style="display:flex;align-items:center;gap:8px;font-family:var(--font);font-size:13px;font-weight:700;padding:10px 16px;cursor:pointer;background:var(--surface2);color:var(--text);border:1px solid var(--divider);border-radius:999px;transition:transform 0.15s" style-hover="transform:translateY(-2px)" style-active="transform:scale(0.9)">
+                  <span style="font-size:18px;line-height:1">{{ c.icon }}</span>
+                  <span>{{ c.label }}</span>
+                  <span style="min-width:22px;height:22px;display:inline-flex;align-items:center;justify-content:center;border-radius:999px;background:var(--accent);color:var(--bg);font-size:12px">{{ c.count }}</span>
+                </button>
+              </sc-for>
+              <button onClick="{{ resetCups }}" style="font-family:var(--font);font-size:12px;padding:8px 14px;cursor:pointer;background:transparent;color:var(--muted-strong);border:1px solid var(--divider);border-radius:999px">Reset</button>
+            </div>
+            <div style="font-size:12px;color:var(--muted);margin-top:10px">{{ cupSummary }}</div>
+          </div>
+        </sc-if>
+        <div data-id="cups" onMouseDown="{{ startResize }}" style="position:absolute;right:2px;bottom:2px;width:14px;height:14px;cursor:nwse-resize;opacity:0.45;background:linear-gradient(135deg,transparent 50%,var(--muted) 50%);border-radius:0 0 4px 0"></div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isCoquette }}" hint-placeholder-val="{{ false }}">
+      <div class="widget" style="{{ w.gratitude.style }}">
+        <div data-id="gratitude" onMouseDown="{{ startDrag }}" style="cursor:grab;display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid var(--divider);user-select:none;flex:none;background:var(--surface);border-radius:12px 12px 0 0">
+          <span style="flex:1;font-weight:800;font-size:13px">Daily gratitude</span>
+          <button data-id="gratitude" onClick="{{ toggleMinimize }}" aria-label="Minimize" style="width:22px;height:22px;flex:none;font-family:var(--font);font-size:14px;line-height:1;background:transparent;border:1px solid var(--divider);border-radius:6px;color:var(--text);cursor:pointer;padding:0">{{ w.gratitude.minIcon }}</button>
+          <button data-id="gratitude" onClick="{{ hideWidget }}" aria-label="Hide" style="width:22px;height:22px;flex:none;font-family:var(--font);font-size:14px;line-height:1;background:transparent;border:1px solid var(--divider);border-radius:6px;color:var(--text);cursor:pointer;padding:0">×</button>
+        </div>
+        <sc-if value="{{ w.gratitude.open }}" hint-placeholder-val="{{ true }}">
+          <div style="padding:14px 16px;overflow:auto;flex:1">
+            <textarea value="{{ gratitude }}" onChange="{{ onGratitude }}" rows="4" placeholder="Three little things you're grateful for today…" style="width:100%;font-family:var(--font);font-size:14px;line-height:1.7;padding:12px 14px;border:1px solid var(--divider);background:var(--surface2);color:var(--text);resize:vertical"></textarea>
+            <div style="font-size:12px;color:var(--muted);margin-top:6px">Saved automatically, just for you ♡</div>
+          </div>
+        </sc-if>
+        <div data-id="gratitude" onMouseDown="{{ startResize }}" style="position:absolute;right:2px;bottom:2px;width:14px;height:14px;cursor:nwse-resize;opacity:0.45;background:linear-gradient(135deg,transparent 50%,var(--muted) 50%);border-radius:0 0 4px 0"></div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isCleangirl }}" hint-placeholder-val="{{ false }}">
+      <div class="widget" style="{{ w.wellness.style }}">
+        <div data-id="wellness" onMouseDown="{{ startDrag }}" style="cursor:grab;display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid var(--divider);user-select:none;flex:none;background:var(--surface);border-radius:12px 12px 0 0">
+          <span style="flex:1;font-weight:800;font-size:13px">Today's rituals</span>
+          <button data-id="wellness" onClick="{{ toggleMinimize }}" aria-label="Minimize" style="width:22px;height:22px;flex:none;font-family:var(--font);font-size:14px;line-height:1;background:transparent;border:1px solid var(--divider);border-radius:6px;color:var(--text);cursor:pointer;padding:0">{{ w.wellness.minIcon }}</button>
+          <button data-id="wellness" onClick="{{ hideWidget }}" aria-label="Hide" style="width:22px;height:22px;flex:none;font-family:var(--font);font-size:14px;line-height:1;background:transparent;border:1px solid var(--divider);border-radius:6px;color:var(--text);cursor:pointer;padding:0">×</button>
+        </div>
+        <sc-if value="{{ w.wellness.open }}" hint-placeholder-val="{{ true }}">
+          <div style="padding:14px 16px;overflow:auto;flex:1">
+            <div style="display:flex;gap:32px;flex-wrap:wrap">
+              <div style="display:flex;align-items:center;gap:14px">
+                <svg width="86" height="86" viewBox="0 0 120 120"><circle cx="60" cy="60" r="52" fill="none" stroke="var(--surface)" stroke-width="10"></circle><circle cx="60" cy="60" r="52" fill="none" stroke="var(--accent)" stroke-width="10" stroke-linecap="round" stroke-dasharray="326.7" stroke-dashoffset="{{ waterDash }}" transform="rotate(-90 60 60)"></circle><text x="60" y="66" text-anchor="middle" style="font-size:20px;font-weight:700;fill:var(--text);font-family:var(--font)">{{ waterPctText }}</text></svg>
+                <div>
+                  <div style="font-size:13px;font-weight:700;margin-bottom:2px">Hydration</div>
+                  <div style="font-size:11px;opacity:0.6;margin-bottom:8px">{{ waterMl }} / 2000 ml</div>
+                  <div style="display:flex;gap:6px">
+                    <button onClick="{{ addWater }}" style="font-family:var(--font);font-weight:800;font-size:11px;padding:6px 12px;cursor:pointer;background:var(--accent);color:var(--bg);border:none;border-radius:999px">+250ml</button>
+                    <button onClick="{{ resetWater }}" style="font-family:var(--font);font-size:11px;padding:6px 10px;cursor:pointer;background:transparent;color:var(--muted-strong);border:1px solid var(--divider);border-radius:999px">Reset</button>
+                  </div>
+                </div>
+              </div>
+              <div style="display:flex;align-items:center;gap:14px">
+                <svg width="86" height="86" viewBox="0 0 120 120"><circle cx="60" cy="60" r="52" fill="none" stroke="var(--surface)" stroke-width="10"></circle><circle cx="60" cy="60" r="52" fill="none" stroke="var(--accent-deep)" stroke-width="10" stroke-linecap="round" stroke-dasharray="326.7" stroke-dashoffset="{{ stepsDash }}" transform="rotate(-90 60 60)"></circle><text x="60" y="66" text-anchor="middle" style="font-size:20px;font-weight:700;fill:var(--text);font-family:var(--font)">{{ stepsPctText }}</text></svg>
+                <div>
+                  <div style="font-size:13px;font-weight:700;margin-bottom:2px">Steps</div>
+                  <div style="font-size:11px;opacity:0.6;margin-bottom:8px">Goal 8,000</div>
+                  <input value="{{ stepsCount }}" onChange="{{ onSteps }}" type="number" min="0" style="width:100px;font-family:var(--font);font-size:12px;padding:6px 8px;border:1px solid var(--divider);border-radius:8px;background:var(--surface2);color:var(--text)">
+                </div>
+              </div>
+            </div>
+          </div>
+        </sc-if>
+        <div data-id="wellness" onMouseDown="{{ startResize }}" style="position:absolute;right:2px;bottom:2px;width:14px;height:14px;cursor:nwse-resize;opacity:0.45;background:linear-gradient(135deg,transparent 50%,var(--muted) 50%);border-radius:0 0 4px 0"></div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isCelestial }}" hint-placeholder-val="{{ false }}">
+      <div class="widget" style="{{ w.moon.style }}">
+        <div data-id="moon" onMouseDown="{{ startDrag }}" style="cursor:grab;display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid var(--divider);user-select:none;flex:none;background:var(--surface);border-radius:12px 12px 0 0">
+          <span style="flex:1;font-weight:800;font-size:13px">Moon &amp; intentions</span>
+          <button data-id="moon" onClick="{{ toggleMinimize }}" aria-label="Minimize" style="width:22px;height:22px;flex:none;font-family:var(--font);font-size:14px;line-height:1;background:transparent;border:1px solid var(--divider);border-radius:6px;color:var(--text);cursor:pointer;padding:0">{{ w.moon.minIcon }}</button>
+          <button data-id="moon" onClick="{{ hideWidget }}" aria-label="Hide" style="width:22px;height:22px;flex:none;font-family:var(--font);font-size:14px;line-height:1;background:transparent;border:1px solid var(--divider);border-radius:6px;color:var(--text);cursor:pointer;padding:0">×</button>
+        </div>
+        <sc-if value="{{ w.moon.open }}" hint-placeholder-val="{{ true }}">
+          <div style="padding:14px 16px;overflow:auto;flex:1">
+            <div style="display:flex;align-items:center;gap:14px;margin-bottom:12px">
+              <div style="font-size:36px;line-height:1;filter:drop-shadow(0 0 10px rgba(217,169,61,0.6))">{{ moonEmoji }}</div>
+              <div>
+                <div style="font-size:14px;font-weight:700">{{ moonLabel }}</div>
+                <div style="font-size:11px;opacity:0.6">{{ moonDetail }}</div>
+              </div>
+            </div>
+            <div style="display:flex;gap:8px;margin-bottom:14px">
+              <sc-for list="{{ moonWeek }}" as="m" hint-placeholder-count="7">
+                <div style="text-align:center">
+                  <div style="font-size:16px">{{ m.emoji }}</div>
+                  <div style="font-size:9px;opacity:0.55;margin-top:2px">{{ m.day }}</div>
+                </div>
+              </sc-for>
+            </div>
+            <div style="font-size:12px;font-weight:700;margin-bottom:6px;color:var(--accent-deep);text-shadow:0 0 12px rgba(217,169,61,0.55)">Daily intention</div>
+            <input value="{{ intention }}" onChange="{{ onIntention }}" placeholder="Tonight I will…" style="width:100%;font-family:var(--font);font-size:13px;padding:10px 12px;border:1px solid var(--divider);background:var(--surface2);color:var(--accent-deep);text-shadow:0 0 10px rgba(217,169,61,0.5);border-radius:8px">
+          </div>
+        </sc-if>
+        <div data-id="moon" onMouseDown="{{ startResize }}" style="position:absolute;right:2px;bottom:2px;width:14px;height:14px;cursor:nwse-resize;opacity:0.45;background:linear-gradient(135deg,transparent 50%,var(--muted) 50%);border-radius:0 0 4px 0"></div>
+      </div>
+    </sc-if>
+
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Modernist&quot;,&quot;Peach fruity&quot;,&quot;Muted red&quot;],&quot;default&quot;:&quot;Modernist&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Theme&quot;},&quot;density&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Cozy&quot;,&quot;Compact&quot;],&quot;default&quot;:&quot;Compact&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Layout&quot;},&quot;tone&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Gentle&quot;,&quot;Direct&quot;],&quot;default&quot;:&quot;Direct&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Voice&quot;}}">
+const TAG_STYLES = {
+  uni: { bg: 'var(--surface)', color: 'var(--muted-strong)', label: 'UNI' },
+  money: { bg: 'var(--tint)', color: 'var(--accent-deep)', label: 'MONEY' },
+  health: { bg: 'var(--surface2)', color: 'var(--muted)', label: 'HEALTH' },
+  general: { bg: 'var(--surface2)', color: 'var(--muted)', label: 'INBOX' },
+  task: { bg: 'var(--surface)', color: 'var(--muted-strong)', label: 'TASK' },
+};
+
+const OVERWHELM_STEPS = {
+  'Uni essay': ['Reread the question + mark scheme (10 min)', 'Bullet the 3 main points (15 min)', 'Write only the intro (20 min)'],
+  'Revision': ['Pick one topic, close everything else (2 min)', 'Skim notes, star the fuzzy bits (15 min)', 'Do 3 practice questions (20 min)'],
+  'Housework': ['Set a 15-min timer (1 min)', 'Clear surfaces into one pile (10 min)', 'Sort it: keep / bin / move (15 min)'],
+  'Laundry': ['Gather it into one basket (5 min)', 'Load and start the machine (5 min)', 'Set a reminder to hang it up (1 min)'],
+  'Self-care': ['Drink a full glass of water (2 min)', 'Shower or wash your face (10 min)', 'Lay out tomorrow\u2019s clothes (5 min)'],
+  'Get moving': ['Put your shoes on (2 min)', 'Walk to the corner and back (10 min)', 'Go further only if you want to (10 min)'],
+  'Just start': ['Name the one next action (2 min)', 'Do it for 5 minutes only (5 min)', 'Then decide: continue or break (1 min)'],
+};
+
+function gbp(n){ return '\u00a3' + (Number(n)||0).toLocaleString('en-GB',{minimumFractionDigits:2,maximumFractionDigits:2}); }
+function todayISO(){ var d=new Date(); var p=function(n){return (n<10?'0':'')+n;}; return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate()); }
+
+const MAIN_THEMES=[{value:'',label:'Theme default'},{value:'look-poster',label:'Poster print'},{value:'look-groovy',label:'Groovy 70s'},{value:'look-editorial',label:'Editorial rules'},{value:'look-cottage',label:'Cottage arches'},{value:'look-scrapbook',label:'Scrapbook tape'},{value:'look-riso',label:'Riso duotone'},{value:'look-swiss',label:'Swiss grid'},{value:'look-candy',label:'Candy plush'},{value:'grotesk',label:'Grotesk'},{value:'rounded',label:'Rounded'},{value:'typewriter',label:'Typewriter'},{value:'deco',label:'Deco'}];
+function loadMain(){try{return localStorage.getItem('halcyon-main-v1')||'editorial';}catch(x){return 'editorial';}}
+function saveMain(k){try{localStorage.setItem('halcyon-main-v1',k);}catch(x){}}
+function loadTheme(){try{return localStorage.getItem('halcyon-theme-v2')||'riviera';}catch(x){return 'riviera';}}
+function loadLS(k,f){try{return localStorage.getItem(k)||f;}catch(x){return f;}}
+function saveLS(k,v){try{localStorage.setItem(k,v);}catch(x){}}
+function loadMedsLeft(){try{var v=localStorage.getItem('halcyon-meds-left');return v==null?0:Number(v)||0;}catch(x){return 0;}}
+function saveMedsLeft(v){try{localStorage.setItem('halcyon-meds-left',String(v));}catch(x){}}
+function loadArr(k){try{var v=JSON.parse(localStorage.getItem(k));return Array.isArray(v)?v:[];}catch(x){return [];}}
+function saveArr(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(x){}return v;}
+function loadMedsOrdered(){try{return JSON.parse(localStorage.getItem('halcyon-meds-ordered'));}catch(x){return null;}}
+function saveMedsOrdered(orderByIso,v){try{localStorage.setItem('halcyon-meds-ordered',JSON.stringify({orderedFor:orderByIso,ordered:v}));}catch(x){}}
+function loadCups(){try{var c=JSON.parse(localStorage.getItem('halcyon-cups'));if(c&&c.date===todayISO())return c;}catch(x){}return {date:todayISO(),coffee:0,tea:0,water:0};}
+function saveCups(c){try{localStorage.setItem('halcyon-cups',JSON.stringify(c));}catch(x){}}
+function loadWellness(){try{var w=JSON.parse(localStorage.getItem('halcyon-wellness'));if(w&&w.date===todayISO())return w;}catch(x){}return {date:todayISO(),ml:0,steps:0};}
+function saveWellness(w){try{localStorage.setItem('halcyon-wellness',JSON.stringify(w));}catch(x){}}
+var MOON_PHASES=[{e:'\uD83C\uDF11',l:'New Moon'},{e:'\uD83C\uDF12',l:'Waxing Crescent'},{e:'\uD83C\uDF13',l:'First Quarter'},{e:'\uD83C\uDF14',l:'Waxing Gibbous'},{e:'\uD83C\uDF15',l:'Full Moon'},{e:'\uD83C\uDF16',l:'Waning Gibbous'},{e:'\uD83C\uDF17',l:'Last Quarter'},{e:'\uD83C\uDF18',l:'Waning Crescent'}];
+function moonPhase(date){var syn=29.53058867;var known=Date.UTC(2000,0,6,18,14);var days=(date.getTime()-known)/86400000;var frac=((days%syn)+syn)%syn/syn;var idx=Math.round(frac*8)%8;return {idx:idx,frac:frac};}
+function saveTheme(k){try{localStorage.setItem('halcyon-theme-v2',k);}catch(x){}}
+var _optCache = {};
+function orderThemes(name){ if (_optCache[name]) return _optCache[name]; var a = THEME_OPTIONS.slice(); var i = a.findIndex(function(o){return o.value===name;}); if (i > 0) a.unshift(a.splice(i,1)[0]); _optCache[name] = a; return a; }
+const THEME_OPTIONS = [{"value":"riviera","label":"Default"},{"value":"graza","label":"Graza Lime"},{"value":"cody","label":"Cody Green"},{"value":"market","label":"Farmers Market"},{"value":"atnn","label":"ATNN Olive"},{"value":"peachy","label":"Peachy Films"},{"value":"cassjuniper","label":"Cass & Juniper"},{"value":"createheart","label":"Create Heart"},{"value":"spark","label":"Spark Orange"},{"value":"plantme","label":"Plant Me Studio"},{"value":"kildya","label":"Gingham Pink"},{"value":"clodiy","label":"Clo Grid"},{"value":"kriti","label":"Butter Hot"},{"value":"checkermint","label":"Checker Mint"},{"value":"ginghamblue","label":"Gingham Blue"},{"value":"plaidcherry","label":"Plaid Cherry"},{"value":"stripetomato","label":"Stripe Tomato"},{"value":"dotbutter","label":"Dot Butter"},{"value":"gridlilac","label":"Grid Lilac"},{"value":"olivediner","label":"Olive Diner"},{"value":"sunflower","label":"Sunflower Riso"},{"value":"terracotta","label":"Terracotta Market"},{"value":"cobalt","label":"Cobalt Cream"},{"value":"bubblegum","label":"Bubblegum Checker"},{"value":"seafoam","label":"Seafoam Wave"},{"value":"mustardgrid","label":"Mustard Grid"},{"value":"cherrycream","label":"Cherry Cream"},{"value":"lavender","label":"Lavender Stripe"},{"value":"avocado","label":"Avocado Dot"},{"value":"clay","label":"Clay Arch"},{"value":"sorbet","label":"Sorbet Wave"},{"value":"modernist","label":"Modernist"},{"value":"peach","label":"Peach fruity"},{"value":"mutedred","label":"Muted red"},{"value":"planets","label":"Planets"},{"value":"sunshine","label":"Sunshine"},{"value":"disco","label":"Disco 54"},{"value":"speakeasy","label":"Speakeasy 20s"},{"value":"neon80s","label":"80s Neon"},{"value":"havana","label":"Havana Nights"},{"value":"tropicana","label":"Club Tropicana"},{"value":"winter","label":"Winter Wonderland"},{"value":"coquette","label":"Coquette"},{"value":"cleangirl","label":"Clean Girl"},{"value":"celestial","label":"Celestial"},{"value":"teddycafe","label":"Teddy Caf\u00e9"},{"value":"mermaid","label":"Mermaidcore"},{"value":"tomatogirl","label":"Tomato Girl"},{"value":"diner","label":"Diner Doodle"},{"value":"breakfast","label":"Breakfast Club"},{"value":"chili70s","label":"70s Chili"},{"value":"happyhour","label":"Happy Hour"},{"value":"bauhaus","label":"Bauhaus Grid"},{"value":"quiet","label":"Quiet (calm)"},{"value":"oat","label":"Oat (calm)"},{"value":"still","label":"Still (calm)"},{"value":"dim","label":"Dim (calm dark)"},{"value":"w0","label":"Paper"},{"value":"w1","label":"Snow"},{"value":"w2","label":"Cloud"},{"value":"w3","label":"Mono"},{"value":"w4","label":"Mist"},{"value":"g0","label":"Dusty Brick"},{"value":"g1","label":"Faded Jade"},{"value":"g2","label":"Soft Iris"},{"value":"g3","label":"Deep Ochre"},{"value":"g4","label":"Pale Teal"},{"value":"g5","label":"Warm Blush"},{"value":"g6","label":"Cool Fern"},{"value":"g7","label":"Muted Denim"},{"value":"g8","label":"Antique Terracotta"},{"value":"g9","label":"Vintage Jade"},{"value":"g10","label":"Quiet Plum"},{"value":"g11","label":"Dusty Ochre"},{"value":"g12","label":"Faded Lagoon"},{"value":"g13","label":"Soft Brick"},{"value":"g14","label":"Deep Fern"},{"value":"g15","label":"Pale Iris"},{"value":"g16","label":"Warm Terracotta"},{"value":"g17","label":"Cool Teal"},{"value":"g18","label":"Muted Blush"},{"value":"g19","label":"Antique Olive"},{"value":"g20","label":"Vintage Denim"},{"value":"g21","label":"Quiet Brick"},{"value":"g22","label":"Dusty Jade"},{"value":"g23","label":"Faded Iris"},{"value":"g24","label":"Soft Ochre"},{"value":"g25","label":"Deep Lagoon"},{"value":"g26","label":"Pale Blush"},{"value":"g27","label":"Warm Fern"},{"value":"g28","label":"Cool Denim"},{"value":"g29","label":"Muted Terracotta"},{"value":"g30","label":"Antique Teal"},{"value":"g31","label":"Vintage Plum"},{"value":"g32","label":"Quiet Olive"},{"value":"g33","label":"Dusty Lagoon"},{"value":"g34","label":"Faded Brick"},{"value":"g35","label":"Soft Fern"},{"value":"g36","label":"Deep Iris"},{"value":"g37","label":"Pale Ochre"},{"value":"g38","label":"Warm Teal"},{"value":"g39","label":"Cool Blush"},{"value":"g40","label":"Muted Olive"},{"value":"g41","label":"Antique Denim"},{"value":"g42","label":"Vintage Terracotta"},{"value":"g43","label":"Quiet Jade"},{"value":"g44","label":"Dusty Plum"},{"value":"g45","label":"Faded Ochre"},{"value":"g46","label":"Soft Lagoon"}];
+
+function countTrailingTrue(arr) { let n = 0; for (let i = arr.length - 1; i >= 0 && arr[i]; i--) n++; return n; }
+function pad(n){ return (n<10?'0':'')+n; }
+function iso(d){ return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate()); }
+function easter(y){var a=y%19,b=Math.floor(y/100),c=y%100,d=Math.floor(b/4),e=b%4,f=Math.floor((b+8)/25),g=Math.floor((b-f+1)/3),h=(19*a+b-d-g+15)%30,i=Math.floor(c/4),k=c%4,l=(32+2*e+2*i-h-k)%7,m=Math.floor((a+11*h+22*l)/451),mo=Math.floor((h+l-7*m+114)/31),da=((h+l-7*m+114)%31)+1;return new Date(y,mo-1,da);}
+function nthMon(y,mo,last){var d=new Date(y,mo,1);if(last){d=new Date(y,mo+1,0);while(d.getDay()!==1)d.setDate(d.getDate()-1);}else{while(d.getDay()!==1)d.setDate(d.getDate()+1);}return d;}
+function subd(d){var w=d.getDay();if(w===6)return new Date(d.getFullYear(),d.getMonth(),d.getDate()+2);if(w===0)return new Date(d.getFullYear(),d.getMonth(),d.getDate()+1);return d;}
+function bankHols(y){var e=easter(y),o={};[subd(new Date(y,0,1)),new Date(e.getFullYear(),e.getMonth(),e.getDate()-2),new Date(e.getFullYear(),e.getMonth(),e.getDate()+1),nthMon(y,4,false),nthMon(y,4,true),nthMon(y,7,true),subd(new Date(y,11,25)),subd(new Date(y,11,26))].forEach(function(d){o[iso(d)]=true;});return o;}
+function prevWorkingDay(d){var x=new Date(d);var h=bankHols(x.getFullYear());for(var n=0;n<40;n++){var w=x.getDay();if(w!==0&&w!==6&&!h[iso(x)])return x;x=new Date(x.getFullYear(),x.getMonth(),x.getDate()-1);if(x.getFullYear()!==d.getFullYear())h=bankHols(x.getFullYear());}return x;}
+function fmt(d){ return d.toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'}); }
+
+const WIDGET_IDS = ['agenda','todo','trend','meds','overwhelm','deadlines','budget','bills','mail','followup','cups','gratitude','wellness','moon'];
+const WIDGET_TITLES = { agenda:'Agenda', todo:'To-do', trend:'ADHD trend setter', meds:'Meds & supply', overwhelm:'Feeling overwhelmed?', deadlines:'Coming up', budget:'Budget snapshot', bills:'Recurring bills', mail:'Inbox', followup:'Needs a reply', cups:'Daily cup', gratitude:'Daily gratitude', wellness:"Today's rituals", moon:'Moon & intentions' };
+const DEFAULT_LAYOUT = {
+  agenda:    { x: 0,    y: 0,    w: 65, h: 440 },
+  todo:      { x: 67,   y: 0,    w: 33, h: 440 },
+  trend:     { x: 0,    y: 460,  w: 31.5, h: 420 },
+  meds:      { x: 33.5, y: 460,  w: 31.5, h: 420 },
+  overwhelm: { x: 67,   y: 460,  w: 33, h: 420 },
+  deadlines: { x: 0,    y: 900,  w: 31.5, h: 300 },
+  budget:    { x: 33.5, y: 900,  w: 31.5, h: 300 },
+  bills:     { x: 67,   y: 900,  w: 33, h: 300 },
+  mail:      { x: 0,    y: 1220, w: 65, h: 380 },
+  followup:  { x: 67,   y: 1220, w: 33, h: 380 },
+  cups:      { x: 0,    y: 1620, w: 100, h: 220 },
+  gratitude: { x: 0,    y: 1620, w: 100, h: 220 },
+  wellness:  { x: 0,    y: 1620, w: 100, h: 240 },
+  moon:      { x: 0,    y: 1620, w: 100, h: 320 },
+};
+const CANVAS_FALLBACK_W = 1760;
+function loadLayout(){ try{ var v=JSON.parse(localStorage.getItem('halcyon-widget-layout-v2')); if(v){ var out={}; WIDGET_IDS.forEach(function(id){ out[id]=v[id]||DEFAULT_LAYOUT[id]; }); return out; } }catch(x){} return JSON.parse(JSON.stringify(DEFAULT_LAYOUT)); }
+function saveLayout(v){ try{ localStorage.setItem('halcyon-widget-layout-v2', JSON.stringify(v)); }catch(x){} }
+function loadMinimized(){ try{ return JSON.parse(localStorage.getItem('halcyon-widget-min'))||{}; }catch(x){ return {}; } }
+function saveMinimized(v){ try{ localStorage.setItem('halcyon-widget-min', JSON.stringify(v)); }catch(x){} }
+function loadHidden(){ try{ return JSON.parse(localStorage.getItem('halcyon-widget-hidden'))||{}; }catch(x){ return {}; } }
+function saveHidden(v){ try{ localStorage.setItem('halcyon-widget-hidden', JSON.stringify(v)); }catch(x){} }
+
+var EDIT_VARIANTS = [
+  { h: 'Three things, done beautifully.', s: 'Your meds, one deadline, and one small kindness to yourself. Everything else can sit on the table with the lemons until you\u2019re ready.' },
+  { h: 'Small, on purpose.', s: 'Nobody needs the whole list today \u2014 just the meds, the one deadline, and one soft thing for you.' },
+  { h: 'Today has room to breathe.', s: 'Pick the easy win first. The rest will still be there, and it can wait its turn.' },
+  { h: 'Enough, not everything.', s: 'A finished small thing beats a tidy long list. Start with whatever feels lightest.' },
+  { h: 'You\u2019re allowed a slow start.', s: 'Meds, one task, one kindness. That\u2019s a full day \u2014 anything extra is a bonus.' },
+  { h: 'One page at a time.', s: 'The lemons can sit on the table. You\u2019re not behind, you\u2019re just here, doing the next small thing.' }
+];
+
+class Component extends DCLogic {
+  state = {
+    editIdx: 0,
+    agenda: loadArr('halcyon-agenda'),
+    checkin: { medsAM: false, medsPM: false },
+    medsLog: {},
+    trend: { focus: 5, social: 5, mood: 5, anxiety: 5, impulsive: 5 },
+    trendMsg: '',
+    medsLeft: loadMedsLeft(),
+    medsPerDay: 1,
+    selectedTask: null,
+    stepsChecked: {},
+    todos: loadArr('halcyon-todos'),
+    newTodo: '',
+    newAgTime: '', newAgTitle: '',
+    calUpcoming: null, budgetFeed: null, reorders: null,
+    selectedTheme: loadTheme(), mainTheme: loadMain(),
+    gratitude: loadLS('halcyon-gratitude',''), intention: loadLS('halcyon-intention',''), wellness: loadWellness(), cupsLog: loadCups(), medsOrderedRec: loadMedsOrdered(),
+    layout: loadLayout(), minimized: loadMinimized(), hidden: loadHidden(), zIndex: {}, zTop: 10,
+    emails: loadArr('halcyon-emails'),
+  };
+
+  setTheme = (e) => { const v = e.currentTarget.value; saveTheme(v); this.setState({ selectedTheme: v }); };
+  setMain = (e) => { const v = e.currentTarget.value; saveMain(v); this.setState({ mainTheme: v }); };
+  onGratitude = (e) => { const v = e.target.value; saveLS('halcyon-gratitude', v); this.setState({ gratitude: v }); };
+  onIntention = (e) => { const v = e.target.value; saveLS('halcyon-intention', v); this.setState({ intention: v }); };
+  addWater = () => { const w = { ...this.state.wellness, ml: Math.min(4000, this.state.wellness.ml + 250) }; saveWellness(w); this.setState({ wellness: w }); };
+  resetWater = () => { const w = { ...this.state.wellness, ml: 0 }; saveWellness(w); this.setState({ wellness: w }); };
+  onSteps = (e) => { const w = { ...this.state.wellness, steps: Math.max(0, Number(e.target.value) || 0) }; saveWellness(w); this.setState({ wellness: w }); };
+  toggleMedsOrdered = () => { const orderByIso = this._currentOrderByIso; const rec = this.state.medsOrderedRec; const v = !(rec && rec.orderedFor === orderByIso && rec.ordered); saveMedsOrdered(orderByIso, v); this.setState({ medsOrderedRec: { orderedFor: orderByIso, ordered: v } }); };
+  addCup = (e) => { const k = e.currentTarget.dataset.kind; const c = { ...this.state.cupsLog, [k]: (this.state.cupsLog[k] || 0) + 1 }; saveCups(c); this.setState({ cupsLog: c }); };
+  resetCups = () => { const c = { date: todayISO(), coffee: 0, tea: 0, water: 0 }; saveCups(c); this.setState({ cupsLog: c }); };
+  cycleTheme = () => { var l = THEME_OPTIONS, c = this.state.selectedTheme, i = l.findIndex(function(o){return o.value===c;}), n = l[(i+1)%l.length].value; saveTheme(n); this.setState({ selectedTheme: n }); };
+
+  onNewTodo = (e) => this.setState({ newTodo: e.target.value });
+  addTodo = () => { const t = this.state.newTodo.trim(); if (!t) return; this.setState(s => ({ todos: saveArr('halcyon-todos', s.todos.concat([{ id: Date.now(), text: t, done: false }])), newTodo: '' })); };
+  toggleTodo = (e) => { const id = Number(e.currentTarget.dataset.id); this.setState(s => ({ todos: saveArr('halcyon-todos', s.todos.map(t => t.id === id ? { ...t, done: !t.done } : t)) })); };
+  removeTodo = (e) => { const id = Number(e.currentTarget.dataset.id); this.setState(s => ({ todos: saveArr('halcyon-todos', s.todos.filter(t => t.id !== id)) })); };
+
+  markRead = (e) => { const id = Number(e.currentTarget.dataset.id); this.setState(s => ({ emails: saveArr('halcyon-emails', s.emails.map(m => m.id === id ? { ...m, unread: false } : m)) })); };
+  toggleAgenda = (e) => { const id = Number(e.currentTarget.dataset.id); this.setState(s => ({ agenda: saveArr('halcyon-agenda', s.agenda.map(a => a.id === id ? { ...a, done: !a.done } : a)) })); };
+
+  toggleMedsAM = () => this.setState(s => { const c = { ...s.checkin, medsAM: !s.checkin.medsAM }; return { checkin: c, medsLog: this.logMedsDay(s.medsLog, c) }; });
+  toggleMedsPM = () => this.setState(s => { const c = { ...s.checkin, medsPM: !s.checkin.medsPM }; return { checkin: c, medsLog: this.logMedsDay(s.medsLog, c) }; });
+  logMedsDay = (log, checkin) => { const log2 = { ...log, [todayISO()]: !!(checkin.medsAM && checkin.medsPM) }; try { localStorage.setItem('halcyon-meds-log', JSON.stringify(log2)); } catch (e) {} return log2; };
+  onMedsLeft = (e) => { var v = e.target.value; saveMedsLeft(v); this.setState({ medsLeft: v }); };
+  onMedsPerDay = (e) => this.setState({ medsPerDay: e.target.value });
+  onTrend = (e) => { var k = e.currentTarget.dataset.key; var v = Number(e.target.value); this.setState(s => ({ trend: { ...s.trend, [k]: v }, trendMsg: '' })); };
+  logTrend = () => { var t = this.state.trend; var entry = { date: todayISO(), focus: t.focus, social: t.social, mood: t.mood, anxiety: t.anxiety, impulsive: t.impulsive }; var log = []; try { log = JSON.parse(localStorage.getItem('halcyon-adhd-log')) || []; } catch (e) {} log.unshift(entry); try { localStorage.setItem('halcyon-adhd-log', JSON.stringify(log.slice(0, 60))); } catch (e) {} this.setState({ trendMsg: 'Logged \u2713' }); };
+
+  componentDidMount() {
+    var up = null, bud = null, re = null;
+    try { up = JSON.parse(localStorage.getItem('halcyon-cal-upcoming')); } catch (e) {}
+    try { bud = JSON.parse(localStorage.getItem('halcyon-budget')); } catch (e) {}
+    try { re = JSON.parse(localStorage.getItem('halcyon-reorders')); } catch (e) {}
+    if (up || bud || re) this.setState({ calUpcoming: up, budgetFeed: bud, reorders: re });
+    try { const log = JSON.parse(localStorage.getItem('halcyon-meds-log')) || {}; this.setState({ medsLog: log }); } catch (e) {}
+    this._editTimer = setInterval(() => { this.setState(s => ({ editIdx: (s.editIdx + 1) % EDIT_VARIANTS.length })); }, 8000);
+  }
+
+  componentWillUnmount() { if (this._editTimer) clearInterval(this._editTimer); }
+
+  onAgTime = (e) => this.setState({ newAgTime: e.target.value });
+  onAgTitle = (e) => this.setState({ newAgTitle: e.target.value });
+  addAgenda = () => { var t = this.state.newAgTitle.trim(); if (!t) return; this.setState(s => ({ agenda: saveArr('halcyon-agenda', s.agenda.concat([{ id: Date.now(), time: s.newAgTime || '\u2014', title: t, tag: 'task', done: false }])), newAgTime: '', newAgTitle: '' })); };
+  removeAgenda = (e) => { var id = Number(e.currentTarget.dataset.id); this.setState(s => ({ agenda: saveArr('halcyon-agenda', s.agenda.filter(a => a.id !== id)) })); };
+  editAgenda = (e) => { var id = Number(e.currentTarget.dataset.id); var f = e.currentTarget.dataset.field; var v = e.target.value; this.setState(s => ({ agenda: saveArr('halcyon-agenda', s.agenda.map(a => a.id === id ? { ...a, [f]: v } : a)) })); };
+
+  selectTask = (e) => this.setState({ selectedTask: e.currentTarget.dataset.task });
+  toggleStep = (e) => { const key = e.currentTarget.dataset.key; this.setState(s => ({ stepsChecked: { ...s.stepsChecked, [key]: !s.stepsChecked[key] } })); };
+
+  bringToFront = (id) => { const z = (this.state.zTop || 10) + 1; this.setState(s => ({ zTop: z, zIndex: { ...s.zIndex, [id]: z } })); };
+
+  canvasWidth = () => (this.canvasEl && this.canvasEl.getBoundingClientRect().width) || CANVAS_FALLBACK_W;
+  canvasRef = (el) => { this.canvasEl = el; };
+
+  startDrag = (e) => {
+    if (e.button !== undefined && e.button !== 0) return;
+    const id = e.currentTarget.dataset.id;
+    this.bringToFront(id);
+    const l = this.state.layout[id] || DEFAULT_LAYOUT[id];
+    this._drag = { id, startX: e.clientX, startY: e.clientY, origX: l.x, origY: l.y, cw: this.canvasWidth() };
+    document.body.classList.add('hx-dragging');
+    window.addEventListener('mousemove', this.onDragMove);
+    window.addEventListener('mouseup', this.onDragEnd);
+    e.preventDefault();
+  };
+  onDragMove = (e) => {
+    if (!this._drag) return;
+    const dxPct = (e.clientX - this._drag.startX) / this._drag.cw * 100;
+    const dy = e.clientY - this._drag.startY;
+    const id = this._drag.id;
+    this.setState(s => ({ layout: { ...s.layout, [id]: { ...s.layout[id], x: Math.max(0, this._drag.origX + dxPct), y: Math.max(0, this._drag.origY + dy) } } }));
+  };
+  onDragEnd = () => {
+    this._settle();
+    window.removeEventListener('mousemove', this.onDragMove);
+    window.removeEventListener('mouseup', this.onDragEnd);
+    if (this._drag) {
+      const id = this._drag.id, GRID = 20;
+      this.setState(s => ({ layout: { ...s.layout, [id]: { ...s.layout[id], x: Math.round(s.layout[id].x), y: Math.round(s.layout[id].y / GRID) * GRID } } }), () => saveLayout(this.state.layout));
+    }
+    this._drag = null;
+  };
+
+  _settle = () => { requestAnimationFrame(() => document.body.classList.remove('hx-dragging')); };
+
+  startResize = (e) => {
+    if (e.button !== undefined && e.button !== 0) return;
+    const id = e.currentTarget.dataset.id;
+    this.bringToFront(id);
+    const l = this.state.layout[id] || DEFAULT_LAYOUT[id];
+    this._resize = { id, startX: e.clientX, startY: e.clientY, origW: l.w, origH: l.h, cw: this.canvasWidth() };
+    document.body.classList.add('hx-dragging');
+    window.addEventListener('mousemove', this.onResizeMove);
+    window.addEventListener('mouseup', this.onResizeEnd);
+    e.preventDefault(); e.stopPropagation();
+  };
+  onResizeMove = (e) => {
+    if (!this._resize) return;
+    const dwPct = (e.clientX - this._resize.startX) / this._resize.cw * 100;
+    const dy = e.clientY - this._resize.startY;
+    const id = this._resize.id;
+    this.setState(s => ({ layout: { ...s.layout, [id]: { ...s.layout[id], w: Math.max(14, this._resize.origW + dwPct), h: Math.max(140, this._resize.origH + dy) } } }));
+  };
+  onResizeEnd = () => {
+    this._settle();
+    window.removeEventListener('mousemove', this.onResizeMove);
+    window.removeEventListener('mouseup', this.onResizeEnd);
+    if (this._resize) {
+      const id = this._resize.id, GRID = 20;
+      this.setState(s => ({ layout: { ...s.layout, [id]: { ...s.layout[id], w: Math.round(s.layout[id].w), h: Math.round(s.layout[id].h / GRID) * GRID } } }), () => saveLayout(this.state.layout));
+    }
+    this._resize = null;
+  };
+
+  toggleMinimize = (e) => { const id = e.currentTarget.dataset.id; this.setState(s => { const m = { ...s.minimized, [id]: !s.minimized[id] }; saveMinimized(m); return { minimized: m }; }); };
+  hideWidget = (e) => { const id = e.currentTarget.dataset.id; this.setState(s => { const h = { ...s.hidden, [id]: true }; saveHidden(h); return { hidden: h }; }); };
+  showWidget = (e) => {
+    const id = e.currentTarget.dataset.id;
+    this.setState(s => { const h = { ...s.hidden, [id]: false }; saveHidden(h); return { hidden: h }; }, () => {
+      const el = document.querySelector('.widget [data-id="' + id + '"]');
+      const card = el && el.closest('.widget');
+      if (!card) return;
+      card.classList.add('hx-enter');
+      setTimeout(() => card.classList.remove('hx-enter'), 260);
+    });
+  };
+  resetLayout = () => {
+    const layout = JSON.parse(JSON.stringify(DEFAULT_LAYOUT));
+    saveLayout(layout); saveHidden({}); saveMinimized({});
+    this.setState({ layout, hidden: {}, minimized: {}, zIndex: {}, zTop: 10 });
+  };
+
+  renderVals() {
+    const { agenda, checkin, selectedTask, stepsChecked } = this.state;
+    const compact = (this.props.density ?? 'Cozy') === 'Compact';
+    const direct = (this.props.tone ?? 'Gentle') === 'Direct';
+    const propTheme = this.props.theme === 'Peach fruity' ? 'peach' : this.props.theme === 'Muted red' ? 'mutedred' : 'modernist';
+    const themeName = this.state.selectedTheme ?? propTheme;
+
+    const mainPad = compact ? '14px 32px 32px' : '20px 32px 56px';
+    const agendaItemPad = compact ? '8px 0' : '12px 0';
+
+    const heartChecks = themeName === 'coquette';
+    const checkBorder = heartChecks ? 'none' : '1.5px solid var(--divider)';
+    const agendaVals = agenda.map(a => {
+      const t = TAG_STYLES[a.tag] || TAG_STYLES.task;
+      return { ...a, doneBg: heartChecks ? 'transparent' : (a.done ? 'var(--accent)' : 'transparent'), checkBorder, mark: heartChecks ? (a.done ? '\u2665' : '\u2661') : '', strike: a.done ? 'line-through' : 'none', textOpacity: a.done ? 0.4 : 1, tagBg: t.bg, tagColor: t.color, tagLabel: t.label };
+    });
+    const tasksLeft = agenda.filter(a => !a.done).length;
+
+    const medsToday = checkin.medsAM && checkin.medsPM;
+    const medsLog = { ...this.state.medsLog, [todayISO()]: medsToday };
+    const medsDaysArr = [];
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date(); d.setDate(d.getDate() - i);
+      medsDaysArr.push(!!medsLog[iso(d)]);
+    }
+    const medsStreak = countTrailingTrue(medsDaysArr);
+    const medsDots = medsDaysArr.map(v => ({ bg: v ? 'var(--accent)' : 'transparent' }));
+
+    const left = Math.max(0, Number(this.state.medsLeft) || 0);
+    const perDay = Math.max(1, Number(this.state.medsPerDay) || 1);
+    const daysSupply = Math.floor(left / perDay);
+    const today = new Date();
+    const runOut = new Date(today.getFullYear(), today.getMonth(), today.getDate() + daysSupply);
+    const orderRaw = new Date(runOut.getFullYear(), runOut.getMonth(), runOut.getDate() - 10);
+    const orderBy = prevWorkingDay(orderRaw);
+    const orderByIso = iso(orderBy);
+    this._currentOrderByIso = orderByIso;
+    const medsOrdered = !!(this.state.medsOrderedRec && this.state.medsOrderedRec.orderedFor === orderByIso && this.state.medsOrderedRec.ordered);
+    const orderNow = orderBy.getTime() <= new Date(today.getFullYear(), today.getMonth(), today.getDate()).getTime();
+    try { localStorage.setItem('halcyon-meds', JSON.stringify({ left: left, perDay: perDay, orderBy: iso(orderBy), orderByLabel: fmt(orderBy), runOut: iso(runOut) })); } catch (e) {}
+
+    const trendBars = [
+      { key: 'focus', label: 'Focus' }, { key: 'social', label: 'Social' }, { key: 'mood', label: 'Mood' }, { key: 'anxiety', label: 'Anxiety' }, { key: 'impulsive', label: 'Impulsive' },
+    ].map(b => ({ key: b.key, label: b.label, value: this.state.trend[b.key] }));
+
+    const dlSource = (this.state.calUpcoming && this.state.calUpcoming.length)
+      ? this.state.calUpcoming.map(u => ({ title: u.title, course: u.tag || 'Calendar', daysLeft: u.daysLeft }))
+      : [
+        { title: 'Stats problem set 4', course: 'STAT 210', daysLeft: 2 },
+        { title: 'Research proposal draft', course: 'RES 301', daysLeft: 6 },
+        { title: 'Cognitive Psych essay', course: 'PSYC 220', daysLeft: 9 },
+      ];
+    const reorderItems = (this.state.reorders || []).map(function (r) { return { title: r.title, course: 'Reorder', daysLeft: r.daysLeft }; });
+    const deadlines = dlSource.concat(reorderItems).sort(function (a, b) { return a.daysLeft - b.daysLeft; }).slice(0, 7).map(d => ({ ...d, numColor: d.daysLeft <= 3 ? 'var(--accent)' : 'var(--text)' }));
+
+    const moneySnapshot = [
+      { name: 'Groceries', spent: 220, budget: 300 },
+      { name: 'Entertainment', spent: 95, budget: 80 },
+      { name: 'Eating out', spent: 140, budget: 150 },
+    ].map(c => { const over = c.spent > c.budget; return { ...c, pct: Math.min(100, Math.round((c.spent / c.budget) * 100)), textColor: over ? 'var(--accent-deep)' : 'var(--text)', barColor: over ? 'var(--accent)' : 'var(--text)' }; });
+
+    const bf = this.state.budgetFeed;
+    const hasBudgetFeed = !!(bf && bf.bills && bf.bills.length);
+    const billsSource = hasBudgetFeed
+      ? bf.bills.map(x => ({ name: x.name, amountText: x.amount, due: 'Budget', status: 'upcoming' }))
+      : [
+        { name: 'Rent', amountText: '\u00a3850.00', due: 'Due today', status: 'due' },
+        { name: 'Phone plan', amountText: '\u00a345.00', due: 'In 4 days', status: 'upcoming' },
+        { name: 'Netflix', amountText: '\u00a315.49', due: 'In 8 days', status: 'upcoming' },
+        { name: 'Gym membership', amountText: '\u00a340.00', due: 'In 10 days', status: 'upcoming' },
+      ];
+    const bills = billsSource.map(b => ({ ...b, tagBg: b.status === 'due' ? 'var(--tint)' : 'var(--surface)', tagColor: b.status === 'due' ? 'var(--accent-deep)' : 'var(--muted-strong)' }));
+    const budHasTotals = !!(bf && typeof bf.leftOver !== 'undefined');
+    const budLeftVal = bf ? Number(bf.leftOver) : 0;
+
+    const overwhelmTasks = Object.keys(OVERWHELM_STEPS).map(name => ({ name, bg: name === selectedTask ? 'var(--accent)' : 'transparent', color: name === selectedTask ? 'var(--bg)' : 'var(--text)' }));
+    const steps = (selectedTask ? OVERWHELM_STEPS[selectedTask] : []).map((text, i) => { const key = selectedTask + '-' + i; const checked = !!stepsChecked[key]; return { text, key, bg: checked ? 'var(--accent)' : 'transparent', strike: checked ? 'line-through' : 'none', opacity: checked ? 0.45 : 1 }; });
+
+    const emailVals = this.state.emails.map(m => { const s = TAG_STYLES[m.tag] || TAG_STYLES.general; return { ...m, dotBg: m.unread ? 'var(--accent)' : 'transparent', nameWeight: m.unread ? 800 : 400, tagBg: s.bg, tagColor: s.color, tagLabel: s.label }; });
+    const unreadCount = this.state.emails.filter(m => m.unread).length;
+    const needsReply = this.state.emails.filter(m => m.reply).map(m => ({ from: m.from, subject: m.subject }));
+
+    const todos = this.state.todos.map(t => ({ ...t, doneBg: heartChecks ? 'transparent' : (t.done ? 'var(--accent)' : 'transparent'), checkBorder, mark: heartChecks ? (t.done ? '\u2665' : '\u2661') : '', strike: t.done ? 'line-through' : 'none', opacity: t.done ? 0.45 : 1 }));
+    const todoCount = this.state.todos.filter(t => !t.done).length;
+
+    const CIRC = 326.7;
+    const waterPct = Math.min(100, Math.round(this.state.wellness.ml / 2000 * 100));
+    const stepsPct = Math.min(100, Math.round(this.state.wellness.steps / 8000 * 100));
+    const mp = moonPhase(new Date());
+    const phase = MOON_PHASES[mp.idx];
+    const illum = Math.round((1 - Math.cos(mp.frac * 2 * Math.PI)) / 2 * 100);
+    const dayNames = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+    const moonWeek = [];
+    for (var i = 0; i < 7; i++) { var d = new Date(); d.setDate(d.getDate() + i); var p = moonPhase(d); moonWeek.push({ emoji: MOON_PHASES[p.idx].e, day: i === 0 ? 'Today' : dayNames[d.getDay()] }); }
+
+    const cl = this.state.cupsLog;
+    const cups = [
+      { kind: 'coffee', label: 'Coffee', icon: '\u2615', count: String(cl.coffee || 0) },
+      { kind: 'tea', label: 'Tea', icon: '\uD83C\uDF75', count: String(cl.tea || 0) },
+      { kind: 'water', label: 'Water', icon: '\uD83D\uDCA7', count: String(cl.water || 0) },
+    ];
+    const totalCups = (cl.coffee||0)+(cl.tea||0)+(cl.water||0);
+    const cupSummary = totalCups === 0 ? 'Nothing logged yet — first sip of the day?' : totalCups + (totalCups === 1 ? ' cup' : ' cups') + ' today' + ((cl.coffee||0) >= 3 ? ' — maybe switch to decaf? \u2661' : '');
+
+    // widget shells
+    const w = {};
+    WIDGET_IDS.forEach(id => {
+      const l = this.state.layout[id] || DEFAULT_LAYOUT[id];
+      const minimized = !!this.state.minimized[id];
+      const hidden = !!this.state.hidden[id];
+      const z = this.state.zIndex[id] || 1;
+      w[id] = {
+        style: 'position:absolute;left:' + l.x + '%;top:' + l.y + 'px;width:' + l.w + '%;height:' + (minimized ? 'auto' : (l.h + 'px')) + ';display:' + (hidden ? 'none' : 'flex') + ';flex-direction:column;background:var(--surface2);border:1px solid var(--divider);border-radius:12px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,0.08);z-index:' + z,
+        open: !minimized, minIcon: minimized ? '+' : '\u2212',
+      };
+    });
+    const hiddenList = WIDGET_IDS.filter(id => this.state.hidden[id]).map(id => ({ id, title: WIDGET_TITLES[id] }));
+
+    const themeName2 = themeName;
+    var collage = (window.HX_COLLAGE_TODAY ? window.HX_COLLAGE_TODAY() : { name: '', base: '#F4EFD9', ink: '#5B3A2E', sticker: '#FF6A1A', stickerInk: '#F4EFD9', l1: 'none', l2: 'none', l3: 'none' });
+    return {
+      collage,
+      editHeadline: EDIT_VARIANTS[this.state.editIdx].h,
+      editSub: EDIT_VARIANTS[this.state.editIdx].s,
+      todayLabel: new Date().toLocaleDateString('en-GB', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' }),
+      greeting: (function(){ var h = new Date().getHours(); return h < 12 ? 'Good morning' : h < 18 ? 'Good afternoon' : 'Good evening'; })(),
+      w, hiddenList, hasHidden: hiddenList.length > 0,
+      startDrag: this.startDrag, startResize: this.startResize, toggleMinimize: this.toggleMinimize, hideWidget: this.hideWidget, showWidget: this.showWidget, resetLayout: this.resetLayout, canvasRef: this.canvasRef,
+      isTeddy: themeName === 'teddycafe', cups, cupSummary, addCup: this.addCup, resetCups: this.resetCups,
+      isCoquette: themeName === 'coquette', isCleangirl: themeName === 'cleangirl', isCelestial: themeName === 'celestial',
+      gratitude: this.state.gratitude, onGratitude: this.onGratitude,
+      intention: this.state.intention, onIntention: this.onIntention,
+      waterMl: String(this.state.wellness.ml), waterPctText: waterPct + '%', waterDash: CIRC * (1 - waterPct / 100),
+      stepsCount: String(this.state.wellness.steps), stepsPctText: stepsPct + '%', stepsDash: CIRC * (1 - stepsPct / 100),
+      addWater: this.addWater, resetWater: this.resetWater, onSteps: this.onSteps,
+      moonEmoji: phase.e, moonLabel: phase.l, moonLabelLower: phase.l.toLowerCase(), moonDetail: illum + '% illuminated', moonWeek,
+      agenda: agendaVals, tasksLeft, medsStreak, medsDots,
+      tasksPillText: direct ? `${tasksLeft} tasks still open` : `${tasksLeft} tasks left today`,
+      trendBars, trendMsg: this.state.trendMsg,
+      amMark: checkin.medsAM ? '\u2713' : '', amBg: checkin.medsAM ? 'var(--accent)' : 'transparent', amColor: checkin.medsAM ? 'var(--bg)' : 'var(--text)',
+      pmMark: checkin.medsPM ? '\u2713' : '', pmBg: checkin.medsPM ? 'var(--accent)' : 'transparent', pmColor: checkin.medsPM ? 'var(--bg)' : 'var(--text)',
+      medsLeft: this.state.medsLeft, medsPerDay: this.state.medsPerDay, onMedsPerDay: this.onMedsPerDay, daysSupply, runOutDate: fmt(runOut), orderByDate: fmt(orderBy),
+      orderStatus: orderNow ? 'Order now' : 'On track', orderBg: orderNow ? 'var(--accent)' : 'var(--surface)', orderColor: orderNow ? 'var(--bg)' : 'var(--muted-strong)',
+      orderedLabel: medsOrdered ? 'Ordered \u2713' : 'Mark ordered', orderedBg: medsOrdered ? 'var(--accent)' : 'transparent', orderedColor: medsOrdered ? 'var(--bg)' : 'var(--muted-strong)',
+      deadlines, moneySnapshot, bills,
+      hasBudgetTotals: budHasTotals, noBudgetTotals: !budHasTotals,
+      budIncome: bf ? gbp(bf.income) : '', budBills: bf ? gbp(bf.billsTotal) : '', budLeft: bf ? gbp(bf.leftOver) : '', budLeftColor: budLeftVal < 0 ? 'var(--accent-deep)' : 'var(--text)',
+      newAgTime: this.state.newAgTime, newAgTitle: this.state.newAgTitle, onAgTime: this.onAgTime, onAgTitle: this.onAgTitle, addAgenda: this.addAgenda, removeAgenda: this.removeAgenda, editAgenda: this.editAgenda,
+      overwhelmTasks, selectedTask, steps, hasSteps: steps.length > 0,
+      toggleAgenda: this.toggleAgenda, onTrend: this.onTrend, logTrend: this.logTrend,
+      toggleMedsAM: this.toggleMedsAM, toggleMedsPM: this.toggleMedsPM, onMedsLeft: this.onMedsLeft, toggleMedsOrdered: this.toggleMedsOrdered,
+      selectTask: this.selectTask, toggleStep: this.toggleStep,
+      mainPad, agendaItemPad,
+      themeName: themeName2, currentTheme: themeName, themeOptions: THEME_OPTIONS, setTheme: this.setTheme, mainTheme: this.state.mainTheme, mainOptions: MAIN_THEMES, setMain: this.setMain, cycleTheme: this.cycleTheme,
+      emails: emailVals, unreadCount, needsReply, markRead: this.markRead,
+      needsReplyText: needsReply.length === 0 ? (unreadCount === 0 ? 'Inbox is clear' : 'Nothing needs a reply') : (needsReply.length === 1 ? 'One wants a reply' : needsReply.length + ' want a reply'),
+      todos, todoCount, newTodo: this.state.newTodo, onNewTodo: this.onNewTodo, addTodo: this.addTodo, toggleTodo: this.toggleTodo, removeTodo: this.removeTodo,
+    };
+  }
+}
+</script>
+</body>
+</html>
