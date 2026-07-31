@@ -40,7 +40,11 @@
 <div style="padding:28px 32px 0">
 <div style="font-size:11px;letter-spacing:0.3em;text-transform:uppercase;color:var(--accent);font-weight:700;margin-bottom:8px">No. 01 — The Diary</div>
 <h1 style="margin:0 0 8px;font-family:'Bodoni Moda',Georgia,serif;font-weight:500;font-size:clamp(42px,6.4vw,80px);line-height:0.92;letter-spacing:-0.025em">Calendar</h1>
-<div style="font-size:14px;opacity:0.6">July 2026 · family events are marked in red</div>
+<div style="display:flex;align-items:center;gap:14px;font-size:14px;opacity:0.75">
+<button onClick="{{ prevMonth }}" aria-label="Previous month" style="font-family:var(--font);font-size:16px;line-height:1;width:28px;height:28px;padding:0;cursor:pointer;background:var(--surface);color:var(--text);border:1px solid var(--divider);border-radius:999px">&lsaquo;</button>
+<span>{{ monthLabel }} · family events are marked in red</span>
+<button onClick="{{ nextMonth }}" aria-label="Next month" style="font-family:var(--font);font-size:16px;line-height:1;width:28px;height:28px;padding:0;cursor:pointer;background:var(--surface);color:var(--text);border:1px solid var(--divider);border-radius:999px">&rsaquo;</button>
+</div>
 <div data-collage-band style="position:relative;height:104px;border-radius:20px;overflow:hidden;margin:20px 0 2px;box-shadow:inset 0 1px 1px rgba(255,255,255,0.4)">
 <div class="hxl1" style="position:absolute;inset:0;mix-blend-mode:multiply"></div>
 <div class="hxl2" style="position:absolute;inset:0;mix-blend-mode:multiply"></div>
@@ -202,9 +206,13 @@ gcal: { bg: 'var(--surface2)', color: 'var(--muted-strong)', label: 'GOOGLE' },
 const EVENTS = {};
 
 const MEMBERS = ['Me'];
-const TODAY = new Date().getDate();
+const REAL_TODAY = new Date();
+const TODAY_DAY = REAL_TODAY.getDate();
+const TODAY_MONTH = REAL_TODAY.getMonth();
+const TODAY_YEAR = REAL_TODAY.getFullYear();
 
 const MONTH_NAMES = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const MONTH_FULL = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 const DEFAULT_BIRTHDAYS = [];
 function loadCustom(){ try { var v = JSON.parse(localStorage.getItem('halcyon-cal-custom')); return Array.isArray(v) ? v : []; } catch (x) { return []; } }
 function saveCustom(v){ try { localStorage.setItem('halcyon-cal-custom', JSON.stringify(v)); } catch (x) {} }
@@ -217,23 +225,27 @@ if (next < REF) next = new Date(REF.getFullYear() + 1, month - 1, day);
 return Math.round((next - REF) / 86400000);
 }
 
-const GCAL_MONTH_FROM = new Date(2026, 6, 1);
-const GCAL_MONTH_TO = new Date(2026, 7, 1);
-
 class Component extends DCLogic {
-state = { selectedDay: TODAY, formTitle: '', formDay: '', formFrom: 'Me', formNote: '', custom: loadCustom(), theme: loadTheme(), mainTheme: loadMain(), birthdays: loadBirthdays(), bName: '', bMonth: '', bDay: '', bNote: '', gcalLinked: false, gcalEvents: [], gcalReport: '', gcalError: '' };
+state = { selectedDay: TODAY_DAY, viewMonth: TODAY_MONTH, viewYear: TODAY_YEAR, formTitle: '', formDay: '', formFrom: 'Me', formNote: '', custom: loadCustom(), theme: loadTheme(), mainTheme: loadMain(), birthdays: loadBirthdays(), bName: '', bMonth: '', bDay: '', bNote: '', gcalLinked: false, gcalEvents: [], gcalReport: '', gcalError: '' };
 
 componentDidUpdate(prev){ if (prev && prev.custom !== this.state.custom) saveCustom(this.state.custom); }
 
 componentDidMount(){
-if (window.HX_GCAL && window.HX_GCAL.wasLinked()) {
-window.HX_GCAL.listEvents(GCAL_MONTH_FROM, GCAL_MONTH_TO, false).then((res) => {
-var evs = res.events.filter(e => e.start.getFullYear() === 2026 && e.start.getMonth() === 6)
+this.refreshGcal(false);
+}
+
+refreshGcal = (interactive) => {
+if (!window.HX_GCAL) { if (interactive) this.setState({ gcalError: 'Calendar sign-in script did not load. Refresh the page and try again.' }); return; }
+if (!interactive && !window.HX_GCAL.wasLinked()) return;
+var y = this.state.viewYear, m = this.state.viewMonth;
+var from = new Date(y, m, 1);
+var to = new Date(y, m + 1, 1);
+window.HX_GCAL.listEvents(from, to, interactive).then((res) => {
+var evs = res.events.filter(e => e.start.getFullYear() === y && e.start.getMonth() === m)
 .map(e => ({ day: e.start.getDate(), title: e.title, family: false, tag: 'gcal', by: e.calendar }));
-this.setState({ gcalEvents: evs, gcalLinked: true, gcalReport: res.report });
-}).catch(() => {});
-}
-}
+this.setState({ gcalEvents: evs, gcalLinked: true, gcalReport: res.report, gcalError: '' });
+}).catch((err) => { if (interactive) this.setState({ gcalError: err.message }); });
+};
 
 selectDay = (e) => {
 const day = Number(e.currentTarget.dataset.day);
@@ -268,6 +280,13 @@ setMain = (e) => { const v = e.currentTarget.value; saveMain(v); this.setState({
 
 cycleTheme = () => { var list = THEME_OPTIONS; var cur = this.state.theme; var i = list.findIndex(function(o){return o.value===cur;}); var next = list[(i+1)%list.length].value; saveTheme(next); this.setState({ theme: next }); };
 
+prevMonth = () => {
+this.setState(s => { let m = s.viewMonth - 1, y = s.viewYear; if (m < 0) { m = 11; y -= 1; } return { viewMonth: m, viewYear: y, selectedDay: 1, gcalEvents: [] }; }, () => this.refreshGcal(false));
+};
+nextMonth = () => {
+this.setState(s => { let m = s.viewMonth + 1, y = s.viewYear; if (m > 11) { m = 0; y += 1; } return { viewMonth: m, viewYear: y, selectedDay: 1, gcalEvents: [] }; }, () => this.refreshGcal(false));
+};
+
 onBName = (e) => this.setState({ bName: e.target.value });
 onBMonth = (e) => this.setState({ bMonth: e.target.value });
 onBDay = (e) => this.setState({ bDay: e.target.value });
@@ -289,15 +308,7 @@ saveBirthdays(list);
 this.setState({ birthdays: list });
 };
 
-connectGcal = () => {
-this.setState({ gcalError: '' });
-if (!window.HX_GCAL) { this.setState({ gcalError: 'Calendar sign-in script did not load. Refresh the page and try again.' }); return; }
-window.HX_GCAL.listEvents(GCAL_MONTH_FROM, GCAL_MONTH_TO, true).then((res) => {
-var evs = res.events.filter(e => e.start.getFullYear() === 2026 && e.start.getMonth() === 6)
-.map(e => ({ day: e.start.getDate(), title: e.title, family: false, tag: 'gcal', by: e.calendar }));
-this.setState({ gcalEvents: evs, gcalLinked: true, gcalReport: res.report });
-}).catch((err) => { this.setState({ gcalError: err.message }); });
-};
+connectGcal = () => { this.refreshGcal(true); };
 
 disconnectGcal = () => {
 if (window.HX_GCAL) window.HX_GCAL.signOut();
@@ -305,7 +316,7 @@ this.setState({ gcalLinked: false, gcalEvents: [], gcalReport: '' });
 };
 
 renderVals() {
-const { selectedDay } = this.state;
+const { selectedDay, viewMonth, viewYear } = this.state;
 const mondayStart = (this.props.weekStart ?? 'Sunday') === 'Monday';
 const highlightWeekends = this.props.highlightWeekends ?? false;
 const merged = this.mergedEvents();
@@ -313,9 +324,10 @@ const merged = this.mergedEvents();
 const weekdays = mondayStart
 ? ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
 : ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-const jsFirst = new Date(2026, 6, 1).getDay();
+const jsFirst = new Date(viewYear, viewMonth, 1).getDay();
 const firstWeekday = mondayStart ? (jsFirst + 6) % 7 : jsFirst;
-const daysInMonth = new Date(2026, 7, 0).getDate();
+const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
+const isCurrentMonth = viewMonth === TODAY_MONTH && viewYear === TODAY_YEAR;
 
 const blank = { day: 0, label: '', cursor: 'default', bg: 'var(--bg)', color: 'var(--text)', hasEvent: false, hasFamily: false, dotColor: 'var(--muted)' };
 const cells = [];
@@ -324,9 +336,9 @@ for (let d = 1; d <= daysInMonth; d++) {
 const evs = merged[d] || [];
 const hasFamily = evs.some(e => e.family);
 const hasOther = evs.some(e => !e.family);
-const isToday = d === TODAY;
+const isToday = isCurrentMonth && d === TODAY_DAY;
 const isSelected = d === selectedDay;
-const jsDay = new Date(2026, 6, d).getDay();
+const jsDay = new Date(viewYear, viewMonth, d).getDay();
 const weekend = jsDay === 0 || jsDay === 6;
 let bg = 'var(--bg)';
 if (highlightWeekends && weekend) bg = 'var(--surface2)';
@@ -351,8 +363,11 @@ tagBg: st.bg, tagColor: st.color, tagLabel: st.label,
 };
 });
 
-const upcoming = Object.keys(merged).map(Number).filter(d => d >= TODAY).sort((a, b) => a - b)
-.flatMap(d => merged[d].map(e => ({ title: e.title, daysLeft: d - TODAY, tagLabel: styleFor(e).label, family: !!e.family })))
+const todayDate = new Date(TODAY_YEAR, TODAY_MONTH, TODAY_DAY);
+const upcoming = Object.keys(merged).map(Number)
+.map(d => ({ d, daysLeft: Math.round((new Date(viewYear, viewMonth, d) - todayDate) / 86400000) }))
+.filter(x => x.daysLeft >= 0).sort((a, b) => a.daysLeft - b.daysLeft)
+.flatMap(x => merged[x.d].map(e => ({ title: e.title, daysLeft: x.daysLeft, tagLabel: styleFor(e).label, family: !!e.family })))
 .map(u => ({ ...u, numColor: (u.daysLeft <= 3 || u.family) ? 'var(--accent)' : 'var(--text)' }));
 
 const themeName = this.state.theme;
@@ -375,8 +390,9 @@ onBName: this.onBName, onBMonth: this.onBMonth, onBDay: this.onBDay, addBirthday
 themeName, themeOptions, setTheme: this.setTheme, mainTheme: this.state.mainTheme, mainOptions: MAIN_THEMES, setMain: this.setMain, themeLabel: (THEME_OPTIONS.find(function(o){return o.value===themeName;})||{}).label || themeName, cycleTheme: this.cycleTheme,
 hasGcal: this.state.gcalLinked, noGcal: !this.state.gcalLinked, gcalReport: this.state.gcalReport, gcalError: this.state.gcalError,
 connectGcal: this.connectGcal, disconnectGcal: this.disconnectGcal,
+monthLabel: MONTH_FULL[viewMonth] + ' ' + viewYear, prevMonth: this.prevMonth, nextMonth: this.nextMonth,
 weekdays, cells, members: MEMBERS,
-selectedLabel: selectedDay === TODAY ? 'Today' : 'July ' + selectedDay,
+selectedLabel: (isCurrentMonth && selectedDay === TODAY_DAY) ? 'Today' : (MONTH_NAMES[viewMonth] + ' ' + selectedDay),
 hasDayEvents: dayEvents.length > 0, noDayEvents: dayEvents.length === 0,
 dayEvents, upcoming,
 formTitle: this.state.formTitle, formDay: this.state.formDay, formNote: this.state.formNote,

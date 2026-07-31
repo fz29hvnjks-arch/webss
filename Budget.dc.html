@@ -13,261 +13,261 @@
 <script src="page-extras.js"></script>
 <script src="collages.js"></script>
 <style>
-  * { box-sizing: border-box; }
-  html, body { margin: 0; max-width: 100vw; overflow-x: hidden; }
-  @media (max-width: 900px) {
-    .rnav { flex-wrap: wrap; gap: 14px !important; }
-    .canvas { min-height: 0 !important; }
-    .widget { position: static !important; width: 100% !important; height: auto !important; margin-bottom: 16px; }
-  }
+* { box-sizing: border-box; }
+html, body { margin: 0; max-width: 100vw; overflow-x: hidden; }
+@media (max-width: 900px) {
+.rnav { flex-wrap: wrap; gap: 14px !important; }
+.canvas { min-height: 0 !important; }
+.widget { position: static !important; width: 100% !important; height: auto !important; margin-bottom: 16px; }
+}
 </style>
 </helmet>
 <div data-theme="{{ themeName }}" data-main="{{ mainTheme }}" style="min-height:100vh;display:flex;flex-direction:column;background:var(--bg);color:var(--text);font-family:var(--font)">
 
-  <nav class="rnav" style="display:flex;align-items:center;gap:22px;padding:16px 32px;border-bottom:2px solid var(--divider)">
-    <div style="font-family:'Bodoni Moda',Georgia,serif;font-weight:600;font-size:23px;letter-spacing:0.01em;margin-right:auto">SIBS</div>
-    <a href="Dashboard.dc.html" style="color:var(--text);text-decoration:none;font-size:14px">Dashboard</a>
-    <a href="Calendar.dc.html" style="color:var(--text);text-decoration:none;font-size:14px">Calendar</a>
-    <a href="Budget.dc.html" aria-current="page" style="color:var(--accent);text-decoration:none;font-size:14px;font-weight:600">Budget</a>
-    <a href="University.dc.html" style="color:var(--text);text-decoration:none;font-size:14px">University</a>
-    <a href="Health.dc.html" style="color:var(--text);text-decoration:none;font-size:14px">Health</a>
-    <a href="Trophies.dc.html" style="color:var(--text);text-decoration:none;font-size:14px">Trophies</a>
-    <select value="{{ mainTheme }}" onChange="{{ setMain }}" aria-label="Main theme" title="Main theme" style="font-family:var(--font);font-size:12px;padding:6px 10px;background:var(--surface2);color:var(--text);border:1px solid var(--divider);border-radius:999px;cursor:pointer"><sc-for list="{{ mainOptions }}" as="m" hint-placeholder-count="3"><option value="{{ m.value }}">{{ m.label }}</option></sc-for></select>
-    <select value="{{ themeName }}" onChange="{{ setTheme }}" aria-label="Colour theme" title="Colour theme" style="font-family:var(--font);font-size:12px;padding:6px 10px;background:var(--surface);color:var(--text);border:1px solid var(--divider);border-radius:8px;cursor:pointer"><sc-for list="{{ themeOptions }}" as="o" hint-placeholder-count="3"><option value="{{ o.value }}">{{ o.label }}</option></sc-for></select>
-  </nav>
+<nav class="rnav" style="display:flex;align-items:center;gap:22px;padding:16px 32px;border-bottom:2px solid var(--divider)">
+<div style="font-family:'Bodoni Moda',Georgia,serif;font-weight:600;font-size:23px;letter-spacing:0.01em;margin-right:auto">SIBS</div>
+<a href="Dashboard.dc.html" style="color:var(--text);text-decoration:none;font-size:14px">Dashboard</a>
+<a href="Calendar.dc.html" style="color:var(--text);text-decoration:none;font-size:14px">Calendar</a>
+<a href="Budget.dc.html" aria-current="page" style="color:var(--accent);text-decoration:none;font-size:14px;font-weight:600">Budget</a>
+<a href="University.dc.html" style="color:var(--text);text-decoration:none;font-size:14px">University</a>
+<a href="Health.dc.html" style="color:var(--text);text-decoration:none;font-size:14px">Health</a>
+<a href="Trophies.dc.html" style="color:var(--text);text-decoration:none;font-size:14px">Trophies</a>
+<select value="{{ mainTheme }}" onChange="{{ setMain }}" aria-label="Main theme" title="Main theme" style="font-family:var(--font);font-size:12px;padding:6px 10px;background:var(--surface2);color:var(--text);border:1px solid var(--divider);border-radius:999px;cursor:pointer"><sc-for list="{{ mainOptions }}" as="m" hint-placeholder-count="3"><option value="{{ m.value }}">{{ m.label }}</option></sc-for></select>
+<select value="{{ themeName }}" onChange="{{ setTheme }}" aria-label="Colour theme" title="Colour theme" style="font-family:var(--font);font-size:12px;padding:6px 10px;background:var(--surface);color:var(--text);border:1px solid var(--divider);border-radius:8px;cursor:pointer"><sc-for list="{{ themeOptions }}" as="o" hint-placeholder-count="3"><option value="{{ o.value }}">{{ o.label }}</option></sc-for></select>
+</nav>
 
-  <div style="padding:28px 32px 0;display:flex;align-items:flex-end;justify-content:space-between;gap:20px;flex-wrap:wrap">
-    <div>
-      <div style="font-size:11px;letter-spacing:0.3em;text-transform:uppercase;color:var(--accent);font-weight:700;margin-bottom:8px">No. 02 — The Ledger</div>
-      <h1 style="margin:0 0 8px;font-family:'Bodoni Moda',Georgia,serif;font-weight:500;font-size:clamp(42px,6.4vw,80px);line-height:0.92;letter-spacing:-0.025em">Money</h1>
-      <div style="font-size:14px;opacity:0.6">Income, bills, debts, shared costs and overtime</div>
-    </div>
-    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px">
-      <button onClick="{{ resetLayout }}" style="font-family:var(--font);font-size:12px;padding:6px 12px;cursor:pointer;background:transparent;color:var(--muted-strong);border:1px solid var(--divider);border-radius:8px">Reset layout</button>
-      <sc-if value="{{ hasHidden }}" hint-placeholder-val="{{ false }}">
-        <div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end;max-width:420px">
-          <sc-for list="{{ hiddenList }}" as="h" hint-placeholder-count="2">
-            <button data-id="{{ h.id }}" onClick="{{ showWidget }}" style="font-family:var(--font);font-size:11px;padding:4px 10px;cursor:pointer;background:var(--surface2);color:var(--muted-strong);border:1px dashed var(--divider);border-radius:999px">+ {{ h.title }}</button>
-          </sc-for>
-        </div>
-      </sc-if>
-    </div>
-  </div>
+<div style="padding:28px 32px 0;display:flex;align-items:flex-end;justify-content:space-between;gap:20px;flex-wrap:wrap">
+<div>
+<div style="font-size:11px;letter-spacing:0.3em;text-transform:uppercase;color:var(--accent);font-weight:700;margin-bottom:8px">No. 02 — The Ledger</div>
+<h1 style="margin:0 0 8px;font-family:'Bodoni Moda',Georgia,serif;font-weight:500;font-size:clamp(42px,6.4vw,80px);line-height:0.92;letter-spacing:-0.025em">Money</h1>
+<div style="font-size:14px;opacity:0.6">Income, bills, debts, shared costs and overtime</div>
+</div>
+<div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px">
+<button onClick="{{ resetLayout }}" style="font-family:var(--font);font-size:12px;padding:6px 12px;cursor:pointer;background:transparent;color:var(--muted-strong);border:1px solid var(--divider);border-radius:8px">Reset layout</button>
+<sc-if value="{{ hasHidden }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end;max-width:420px">
+<sc-for list="{{ hiddenList }}" as="h" hint-placeholder-count="2">
+<button data-id="{{ h.id }}" onClick="{{ showWidget }}" style="font-family:var(--font);font-size:11px;padding:4px 10px;cursor:pointer;background:var(--surface2);color:var(--muted-strong);border:1px dashed var(--divider);border-radius:999px">+ {{ h.title }}</button>
+</sc-for>
+</div>
+</sc-if>
+</div>
+</div>
 
-  <div data-collage-band style="position:relative;height:104px;border-radius:20px;overflow:hidden;margin:20px 32px 2px;box-shadow:inset 0 1px 1px rgba(255,255,255,0.4)">
-    <div class="hxl1" style="position:absolute;inset:0;mix-blend-mode:multiply"></div>
-    <div class="hxl2" style="position:absolute;inset:0;mix-blend-mode:multiply"></div>
-    <div class="hxl3" style="position:absolute;inset:0;mix-blend-mode:multiply;opacity:0.72"></div>
-    <div class="hxart" style="position:absolute;inset:0;background-size:cover;background-position:center;mix-blend-mode:multiply"></div>
-    <div style="position:absolute;inset:0;pointer-events:none;opacity:0.16;background-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)'/%3E%3C/svg%3E&quot;)"></div>
-  </div>
+<div data-collage-band style="position:relative;height:104px;border-radius:20px;overflow:hidden;margin:20px 32px 2px;box-shadow:inset 0 1px 1px rgba(255,255,255,0.4)">
+<div class="hxl1" style="position:absolute;inset:0;mix-blend-mode:multiply"></div>
+<div class="hxl2" style="position:absolute;inset:0;mix-blend-mode:multiply"></div>
+<div class="hxl3" style="position:absolute;inset:0;mix-blend-mode:multiply;opacity:0.72"></div>
+<div class="hxart" style="position:absolute;inset:0;background-size:cover;background-position:center;mix-blend-mode:multiply"></div>
+<div style="position:absolute;inset:0;pointer-events:none;opacity:0.16;background-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)'/%3E%3C/svg%3E&quot;)"></div>
+</div>
 
-  <div class="canvas" ref="{{ canvasRef }}" style="position:relative;margin:20px 32px 48px;min-height:{{ canvasMinHeight }}">
+<div class="canvas" ref="{{ canvasRef }}" style="position:relative;margin:20px 32px 48px;min-height:{{ canvasMinHeight }}">
 
-    <div class="widget" style="{{ w.summary.style }}">
-      <div data-id="summary" onMouseDown="{{ startDrag }}" style="cursor:grab;display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid var(--divider);user-select:none;flex:none;background:var(--surface);border-radius:12px 12px 0 0">
-        <span style="flex:1;font-weight:800;font-size:13px">This month</span>
-        <button data-id="summary" onClick="{{ toggleMinimize }}" aria-label="Minimize" style="width:22px;height:22px;flex:none;font-family:var(--font);font-size:14px;line-height:1;background:transparent;border:1px solid var(--divider);border-radius:6px;color:var(--text);cursor:pointer;padding:0">{{ w.summary.minIcon }}</button>
-        <button data-id="summary" onClick="{{ hideWidget }}" aria-label="Hide" style="width:22px;height:22px;flex:none;font-family:var(--font);font-size:14px;line-height:1;background:transparent;border:1px solid var(--divider);border-radius:6px;color:var(--text);cursor:pointer;padding:0">&times;</button>
-      </div>
-      <sc-if value="{{ w.summary.open }}" hint-placeholder-val="{{ true }}">
-        <div style="padding:16px;overflow:auto;flex:1">
-          <div style="display:flex;gap:36px;flex-wrap:wrap">
-            <div><div style="font-size:12px;opacity:0.55;margin-bottom:4px">Income</div><div style="font-family:var(--font);font-weight:800;font-size:26px">{{ incomeTotal }}</div></div>
-            <div><div style="font-size:12px;opacity:0.55;margin-bottom:4px">Bills</div><div style="font-family:var(--font);font-weight:800;font-size:26px">{{ billsTotal }}</div></div>
-            <div><div style="font-size:12px;opacity:0.55;margin-bottom:4px">Debt payments</div><div style="font-family:var(--font);font-weight:800;font-size:26px">{{ debtsMonthlyTotal }}</div></div>
-            <div><div style="font-size:12px;opacity:0.55;margin-bottom:4px">Left after bills &amp; debt</div><div style="font-family:var(--font);font-weight:800;font-size:26px;color:{{ leftColor }}">{{ leftOver }}</div></div>
-          </div>
-        </div>
-      </sc-if>
-      <div data-id="summary" onMouseDown="{{ startResize }}" style="position:absolute;right:2px;bottom:2px;width:14px;height:14px;cursor:nwse-resize;opacity:0.45;background:linear-gradient(135deg,transparent 50%,var(--muted) 50%);border-radius:0 0 4px 0"></div>
-    </div>
+<div class="widget" style="{{ w.summary.style }}">
+<div data-id="summary" onMouseDown="{{ startDrag }}" style="cursor:grab;display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid var(--divider);user-select:none;flex:none;background:var(--surface);border-radius:12px 12px 0 0">
+<span style="flex:1;font-weight:800;font-size:13px">This month</span>
+<button data-id="summary" onClick="{{ toggleMinimize }}" aria-label="Minimize" style="width:22px;height:22px;flex:none;font-family:var(--font);font-size:14px;line-height:1;background:transparent;border:1px solid var(--divider);border-radius:6px;color:var(--text);cursor:pointer;padding:0">{{ w.summary.minIcon }}</button>
+<button data-id="summary" onClick="{{ hideWidget }}" aria-label="Hide" style="width:22px;height:22px;flex:none;font-family:var(--font);font-size:14px;line-height:1;background:transparent;border:1px solid var(--divider);border-radius:6px;color:var(--text);cursor:pointer;padding:0">&times;</button>
+</div>
+<sc-if value="{{ w.summary.open }}" hint-placeholder-val="{{ true }}">
+<div style="padding:16px;overflow:auto;flex:1">
+<div style="display:flex;gap:36px;flex-wrap:wrap">
+<div><div style="font-size:12px;opacity:0.55;margin-bottom:4px">Income</div><div style="font-family:var(--font);font-weight:800;font-size:26px">{{ incomeTotal }}</div></div>
+<div><div style="font-size:12px;opacity:0.55;margin-bottom:4px">Bills</div><div style="font-family:var(--font);font-weight:800;font-size:26px">{{ billsTotal }}</div></div>
+<div><div style="font-size:12px;opacity:0.55;margin-bottom:4px">Debt payments</div><div style="font-family:var(--font);font-weight:800;font-size:26px">{{ debtsMonthlyTotal }}</div></div>
+<div><div style="font-size:12px;opacity:0.55;margin-bottom:4px">Left after bills &amp; debt</div><div style="font-family:var(--font);font-weight:800;font-size:26px;color:{{ leftColor }}">{{ leftOver }}</div></div>
+</div>
+</div>
+</sc-if>
+<div data-id="summary" onMouseDown="{{ startResize }}" style="position:absolute;right:2px;bottom:2px;width:14px;height:14px;cursor:nwse-resize;opacity:0.45;background:linear-gradient(135deg,transparent 50%,var(--muted) 50%);border-radius:0 0 4px 0"></div>
+</div>
 
-    <div class="widget" style="{{ w.income.style }}">
-      <div data-id="income" onMouseDown="{{ startDrag }}" style="cursor:grab;display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid var(--divider);user-select:none;flex:none;background:var(--surface);border-radius:12px 12px 0 0">
-        <span style="flex:1;font-weight:800;font-size:13px">Income</span>
-        <button data-id="income" onClick="{{ toggleMinimize }}" aria-label="Minimize" style="width:22px;height:22px;flex:none;font-family:var(--font);font-size:14px;line-height:1;background:transparent;border:1px solid var(--divider);border-radius:6px;color:var(--text);cursor:pointer;padding:0">{{ w.income.minIcon }}</button>
-        <button data-id="income" onClick="{{ hideWidget }}" aria-label="Hide" style="width:22px;height:22px;flex:none;font-family:var(--font);font-size:14px;line-height:1;background:transparent;border:1px solid var(--divider);border-radius:6px;color:var(--text);cursor:pointer;padding:0">&times;</button>
-      </div>
-      <sc-if value="{{ w.income.open }}" hint-placeholder-val="{{ true }}">
-        <div style="padding:16px;overflow:auto;flex:1">
-          <div style="margin-bottom:16px">
-            <div style="font-size:12px;opacity:0.6;margin-bottom:5px">Salary (take-home)</div>
-            <div style="display:flex;align-items:center;gap:4px">
-              <span style="font-size:22px;font-weight:800">£</span>
-              <input value="{{ salary }}" data-field="salary" onChange="{{ onInc }}" type="number" step="0.01" style="font-family:var(--font);font-weight:800;font-size:22px;padding:6px 10px;width:200px;border:1px solid var(--divider);border-radius:8px;background:var(--surface);color:var(--text)">
-            </div>
-          </div>
-          <div style="padding:14px 0;border-top:1px solid var(--hairline)">
-            <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px">
-              <div style="font-size:14px;font-weight:600">Child benefit</div>
-              <div style="font-size:14px;font-weight:800">{{ cbMonthly }}</div>
-            </div>
-            <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end">
-              <label style="font-size:11px;opacity:0.7">Per week £<input value="{{ cbWeekly }}" data-field="cbWeekly" onChange="{{ onInc }}" type="number" step="0.01" style="margin-left:4px;width:90px;font-family:var(--font);font-size:13px;padding:6px 8px;border:1px solid var(--divider);border-radius:6px;background:var(--surface);color:var(--text)"></label>
-              <label style="font-size:11px;opacity:0.7">Month<input value="{{ cbMonth }}" data-field="cbMonth" onChange="{{ onInc }}" type="month" style="margin-left:4px;font-family:var(--font);font-size:13px;padding:6px 8px;border:1px solid var(--divider);border-radius:6px;background:var(--surface);color:var(--text)"></label>
-            </div>
-            <div style="font-size:12px;opacity:0.6;margin-top:8px">Paid every Monday · <strong>{{ cbCount }} Mondays</strong> this month{{ cbHolidayNote }}</div>
-          </div>
-          <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-top:1px solid var(--hairline)">
-            <div style="font-size:14px;font-weight:600">Child maintenance</div>
-            <div style="display:flex;align-items:center;gap:3px"><span style="opacity:0.6">£</span><input value="{{ maintenance }}" data-field="maintenance" onChange="{{ onInc }}" type="number" step="0.01" style="width:110px;text-align:right;font-family:var(--font);font-size:14px;padding:6px 8px;border:1px solid var(--divider);border-radius:6px;background:var(--surface);color:var(--text)"></div>
-          </div>
-          <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-top:1px solid var(--hairline)">
-            <div style="font-size:14px;font-weight:600">Additional</div>
-            <div style="display:flex;align-items:center;gap:3px"><span style="opacity:0.6">£</span><input value="{{ additional }}" data-field="additional" onChange="{{ onInc }}" type="number" step="0.01" style="width:110px;text-align:right;font-family:var(--font);font-size:14px;padding:6px 8px;border:1px solid var(--divider);border-radius:6px;background:var(--surface);color:var(--text)"></div>
-          </div>
-          <sc-for list="{{ extraIncome }}" as="ei" hint-placeholder-count="1">
-            <div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-top:1px solid var(--hairline)">
-              <input value="{{ ei.name }}" data-id="{{ ei.id }}" data-field="name" onChange="{{ onExtraIncome }}" placeholder="What for?" style="flex:1;min-width:0;font-family:var(--font);font-size:13px;padding:6px 8px;border:1px solid var(--divider);border-radius:6px;background:var(--surface);color:var(--text)">
-              <div style="display:flex;align-items:center;gap:3px;flex:none"><span style="opacity:0.6;font-size:13px">£</span><input value="{{ ei.amount }}" data-id="{{ ei.id }}" data-field="amount" onChange="{{ onExtraIncome }}" type="number" step="0.01" style="width:90px;text-align:right;font-family:var(--font);font-size:13px;padding:6px 8px;border:1px solid var(--divider);border-radius:6px;background:var(--surface);color:var(--text)"></div>
-              <button data-id="{{ ei.id }}" onClick="{{ removeExtraIncome }}" aria-label="Remove additional income" style="flex:none;font-size:15px;line-height:1;color:var(--muted);background:transparent;border:none;cursor:pointer;padding:2px 4px">×</button>
-            </div>
-          </sc-for>
-          <button onClick="{{ addExtraIncome }}" style="margin-top:8px;font-family:var(--font);font-weight:800;font-size:12px;padding:6px 12px;cursor:pointer;background:transparent;color:var(--accent);border:1px dashed var(--divider);border-radius:8px">+ Add another</button>
-          <div style="display:flex;justify-content:space-between;padding-top:14px;border-top:2px solid var(--divider);font-size:15px;font-weight:800">
-            <span>Total income</span><span>{{ incomeTotal }}</span>
-          </div>
-        </div>
-      </sc-if>
-      <div data-id="income" onMouseDown="{{ startResize }}" style="position:absolute;right:2px;bottom:2px;width:14px;height:14px;cursor:nwse-resize;opacity:0.45;background:linear-gradient(135deg,transparent 50%,var(--muted) 50%);border-radius:0 0 4px 0"></div>
-    </div>
+<div class="widget" style="{{ w.income.style }}">
+<div data-id="income" onMouseDown="{{ startDrag }}" style="cursor:grab;display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid var(--divider);user-select:none;flex:none;background:var(--surface);border-radius:12px 12px 0 0">
+<span style="flex:1;font-weight:800;font-size:13px">Income</span>
+<button data-id="income" onClick="{{ toggleMinimize }}" aria-label="Minimize" style="width:22px;height:22px;flex:none;font-family:var(--font);font-size:14px;line-height:1;background:transparent;border:1px solid var(--divider);border-radius:6px;color:var(--text);cursor:pointer;padding:0">{{ w.income.minIcon }}</button>
+<button data-id="income" onClick="{{ hideWidget }}" aria-label="Hide" style="width:22px;height:22px;flex:none;font-family:var(--font);font-size:14px;line-height:1;background:transparent;border:1px solid var(--divider);border-radius:6px;color:var(--text);cursor:pointer;padding:0">&times;</button>
+</div>
+<sc-if value="{{ w.income.open }}" hint-placeholder-val="{{ true }}">
+<div style="padding:16px;overflow:auto;flex:1">
+<div style="margin-bottom:16px">
+<div style="font-size:12px;opacity:0.6;margin-bottom:5px">Salary (take-home)</div>
+<div style="display:flex;align-items:center;gap:4px">
+<span style="font-size:22px;font-weight:800">£</span>
+<input value="{{ salary }}" data-field="salary" onChange="{{ onInc }}" type="number" step="0.01" style="font-family:var(--font);font-weight:800;font-size:22px;padding:6px 10px;width:200px;border:1px solid var(--divider);border-radius:8px;background:var(--surface);color:var(--text)">
+</div>
+</div>
+<div style="padding:14px 0;border-top:1px solid var(--hairline)">
+<div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px">
+<div style="font-size:14px;font-weight:600">Child benefit</div>
+<div style="font-size:14px;font-weight:800">{{ cbMonthly }}</div>
+</div>
+<div style="display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end">
+<label style="font-size:11px;opacity:0.7">Per week £<input value="{{ cbWeekly }}" data-field="cbWeekly" onChange="{{ onInc }}" type="number" step="0.01" style="margin-left:4px;width:90px;font-family:var(--font);font-size:13px;padding:6px 8px;border:1px solid var(--divider);border-radius:6px;background:var(--surface);color:var(--text)"></label>
+<label style="font-size:11px;opacity:0.7">Month<input value="{{ cbMonth }}" data-field="cbMonth" onChange="{{ onInc }}" type="month" style="margin-left:4px;font-family:var(--font);font-size:13px;padding:6px 8px;border:1px solid var(--divider);border-radius:6px;background:var(--surface);color:var(--text)"></label>
+</div>
+<div style="font-size:12px;opacity:0.6;margin-top:8px">Paid every Monday · <strong>{{ cbCount }} Mondays</strong> this month{{ cbHolidayNote }}</div>
+</div>
+<div style="display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-top:1px solid var(--hairline)">
+<div style="font-size:14px;font-weight:600">Child maintenance</div>
+<div style="display:flex;align-items:center;gap:3px"><span style="opacity:0.6">£</span><input value="{{ maintenance }}" data-field="maintenance" onChange="{{ onInc }}" type="number" step="0.01" style="width:110px;text-align:right;font-family:var(--font);font-size:14px;padding:6px 8px;border:1px solid var(--divider);border-radius:6px;background:var(--surface);color:var(--text)"></div>
+</div>
+<div style="display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-top:1px solid var(--hairline)">
+<div style="font-size:14px;font-weight:600">Additional</div>
+<div style="display:flex;align-items:center;gap:3px"><span style="opacity:0.6">£</span><input value="{{ additional }}" data-field="additional" onChange="{{ onInc }}" type="number" step="0.01" style="width:110px;text-align:right;font-family:var(--font);font-size:14px;padding:6px 8px;border:1px solid var(--divider);border-radius:6px;background:var(--surface);color:var(--text)"></div>
+</div>
+<sc-for list="{{ extraIncome }}" as="ei" hint-placeholder-count="1">
+<div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-top:1px solid var(--hairline)">
+<input value="{{ ei.name }}" data-id="{{ ei.id }}" data-field="name" onChange="{{ onExtraIncome }}" placeholder="What for?" style="flex:1;min-width:0;font-family:var(--font);font-size:13px;padding:6px 8px;border:1px solid var(--divider);border-radius:6px;background:var(--surface);color:var(--text)">
+<div style="display:flex;align-items:center;gap:3px;flex:none"><span style="opacity:0.6;font-size:13px">£</span><input value="{{ ei.amount }}" data-id="{{ ei.id }}" data-field="amount" onChange="{{ onExtraIncome }}" type="number" step="0.01" style="width:90px;text-align:right;font-family:var(--font);font-size:13px;padding:6px 8px;border:1px solid var(--divider);border-radius:6px;background:var(--surface);color:var(--text)"></div>
+<button data-id="{{ ei.id }}" onClick="{{ removeExtraIncome }}" aria-label="Remove additional income" style="flex:none;font-size:15px;line-height:1;color:var(--muted);background:transparent;border:none;cursor:pointer;padding:2px 4px">×</button>
+</div>
+</sc-for>
+<button onClick="{{ addExtraIncome }}" style="margin-top:8px;font-family:var(--font);font-weight:800;font-size:12px;padding:6px 12px;cursor:pointer;background:transparent;color:var(--accent);border:1px dashed var(--divider);border-radius:8px">+ Add another</button>
+<div style="display:flex;justify-content:space-between;padding-top:14px;border-top:2px solid var(--divider);font-size:15px;font-weight:800">
+<span>Total income</span><span>{{ incomeTotal }}</span>
+</div>
+</div>
+</sc-if>
+<div data-id="income" onMouseDown="{{ startResize }}" style="position:absolute;right:2px;bottom:2px;width:14px;height:14px;cursor:nwse-resize;opacity:0.45;background:linear-gradient(135deg,transparent 50%,var(--muted) 50%);border-radius:0 0 4px 0"></div>
+</div>
 
-    <div class="widget" style="{{ w.bills.style }}">
-      <div data-id="bills" onMouseDown="{{ startDrag }}" style="cursor:grab;display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid var(--divider);user-select:none;flex:none;background:var(--surface);border-radius:12px 12px 0 0">
-        <span style="flex:1;font-weight:800;font-size:13px">Bills · {{ billsTotal }}</span>
-        <button data-id="bills" onClick="{{ toggleMinimize }}" aria-label="Minimize" style="width:22px;height:22px;flex:none;font-family:var(--font);font-size:14px;line-height:1;background:transparent;border:1px solid var(--divider);border-radius:6px;color:var(--text);cursor:pointer;padding:0">{{ w.bills.minIcon }}</button>
-        <button data-id="bills" onClick="{{ hideWidget }}" aria-label="Hide" style="width:22px;height:22px;flex:none;font-family:var(--font);font-size:14px;line-height:1;background:transparent;border:1px solid var(--divider);border-radius:6px;color:var(--text);cursor:pointer;padding:0">&times;</button>
-      </div>
-      <sc-if value="{{ w.bills.open }}" hint-placeholder-val="{{ true }}">
-        <div style="padding:16px;overflow:auto;flex:1">
-          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">
-            <input value="{{ billsSheetInput }}" onChange="{{ onBillsInput }}" placeholder="Published Google Sheet CSV link" style="flex:1;min-width:180px;font-family:var(--font);font-size:13px;padding:9px 12px;border:1px solid var(--divider);border-radius:8px;background:var(--surface);color:var(--text)">
-            <button onClick="{{ syncBills }}" style="font-family:var(--font);font-weight:800;font-size:13px;padding:9px 18px;cursor:pointer;background:var(--accent);color:var(--bg);border:none;border-radius:8px">Sync</button>
-          </div>
-          <sc-if value="{{ billsStatus }}" hint-placeholder-val="{{ false }}">
-            <div style="font-size:11px;opacity:0.6;margin-bottom:10px">{{ billsStatus }}</div>
-          </sc-if>
-          <sc-if value="{{ hasBills }}" hint-placeholder-val="{{ false }}">
-            <table style="width:100%;border-collapse:collapse;font-size:13px">
-              <thead>
-                <tr>
-                  <sc-for list="{{ billsHeaders }}" as="h" hint-placeholder-count="3">
-                    <th style="text-align:{{ h.align }};font-size:11px;letter-spacing:0.06em;text-transform:uppercase;opacity:0.55;padding:8px 10px 8px 0;border-bottom:2px solid var(--divider)">{{ h.label }}</th>
-                  </sc-for>
-                </tr>
-              </thead>
-              <tbody>
-                <sc-for list="{{ billsRows }}" as="r" hint-placeholder-count="4">
-                  <tr>
-                    <sc-for list="{{ r.cells }}" as="c" hint-placeholder-count="3">
-                      <td style="text-align:{{ c.align }};padding:9px 10px 9px 0;border-bottom:1px solid var(--hairline)">{{ c.text }}</td>
-                    </sc-for>
-                  </tr>
-                </sc-for>
-              </tbody>
-            </table>
-          </sc-if>
-          <sc-if value="{{ noBills }}" hint-placeholder-val="{{ true }}">
-            <p style="font-size:13px;opacity:0.6;margin:0">Structure your bills in a Google Sheet (e.g. Bill · Date · Amount), publish it to the web as CSV, and paste the link above — the table appears here.</p>
-          </sc-if>
-        </div>
-      </sc-if>
-      <div data-id="bills" onMouseDown="{{ startResize }}" style="position:absolute;right:2px;bottom:2px;width:14px;height:14px;cursor:nwse-resize;opacity:0.45;background:linear-gradient(135deg,transparent 50%,var(--muted) 50%);border-radius:0 0 4px 0"></div>
-    </div>
+<div class="widget" style="{{ w.bills.style }}">
+<div data-id="bills" onMouseDown="{{ startDrag }}" style="cursor:grab;display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid var(--divider);user-select:none;flex:none;background:var(--surface);border-radius:12px 12px 0 0">
+<span style="flex:1;font-weight:800;font-size:13px">Bills · {{ billsTotal }}</span>
+<button data-id="bills" onClick="{{ toggleMinimize }}" aria-label="Minimize" style="width:22px;height:22px;flex:none;font-family:var(--font);font-size:14px;line-height:1;background:transparent;border:1px solid var(--divider);border-radius:6px;color:var(--text);cursor:pointer;padding:0">{{ w.bills.minIcon }}</button>
+<button data-id="bills" onClick="{{ hideWidget }}" aria-label="Hide" style="width:22px;height:22px;flex:none;font-family:var(--font);font-size:14px;line-height:1;background:transparent;border:1px solid var(--divider);border-radius:6px;color:var(--text);cursor:pointer;padding:0">&times;</button>
+</div>
+<sc-if value="{{ w.bills.open }}" hint-placeholder-val="{{ true }}">
+<div style="padding:16px;overflow:auto;flex:1">
+<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">
+<input value="{{ billsSheetInput }}" onChange="{{ onBillsInput }}" placeholder="Published Google Sheet CSV link" style="flex:1;min-width:180px;font-family:var(--font);font-size:13px;padding:9px 12px;border:1px solid var(--divider);border-radius:8px;background:var(--surface);color:var(--text)">
+<button onClick="{{ syncBills }}" style="font-family:var(--font);font-weight:800;font-size:13px;padding:9px 18px;cursor:pointer;background:var(--accent);color:var(--bg);border:none;border-radius:8px">Sync</button>
+</div>
+<sc-if value="{{ billsStatus }}" hint-placeholder-val="{{ false }}">
+<div style="font-size:11px;opacity:0.6;margin-bottom:10px">{{ billsStatus }}</div>
+</sc-if>
+<sc-if value="{{ hasBills }}" hint-placeholder-val="{{ false }}">
+<table style="width:100%;border-collapse:collapse;font-size:13px">
+<thead>
+<tr>
+<sc-for list="{{ billsHeaders }}" as="h" hint-placeholder-count="3">
+<th style="text-align:{{ h.align }};font-size:11px;letter-spacing:0.06em;text-transform:uppercase;opacity:0.55;padding:8px 10px 8px 0;border-bottom:2px solid var(--divider)">{{ h.label }}</th>
+</sc-for>
+</tr>
+</thead>
+<tbody>
+<sc-for list="{{ billsRows }}" as="r" hint-placeholder-count="4">
+<tr>
+<sc-for list="{{ r.cells }}" as="c" hint-placeholder-count="3">
+<td style="text-align:{{ c.align }};padding:9px 10px 9px 0;border-bottom:1px solid var(--hairline)">{{ c.text }}</td>
+</sc-for>
+</tr>
+</sc-for>
+</tbody>
+</table>
+</sc-if>
+<sc-if value="{{ noBills }}" hint-placeholder-val="{{ true }}">
+<p style="font-size:13px;opacity:0.6;margin:0">Structure your bills in a Google Sheet (e.g. Bill · Date · Amount), publish it to the web as CSV, and paste the link above — the table appears here.</p>
+</sc-if>
+</div>
+</sc-if>
+<div data-id="bills" onMouseDown="{{ startResize }}" style="position:absolute;right:2px;bottom:2px;width:14px;height:14px;cursor:nwse-resize;opacity:0.45;background:linear-gradient(135deg,transparent 50%,var(--muted) 50%);border-radius:0 0 4px 0"></div>
+</div>
 
-    <div class="widget" style="{{ w.debts.style }}">
-      <div data-id="debts" onMouseDown="{{ startDrag }}" style="cursor:grab;display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid var(--divider);user-select:none;flex:none;background:var(--surface);border-radius:12px 12px 0 0">
-        <span style="flex:1;font-weight:800;font-size:13px">Debts</span>
-        <button data-id="debts" onClick="{{ addDebtBtn }}" aria-label="Add debt tracker" style="width:22px;height:22px;flex:none;font-size:14px;line-height:1;font-weight:800;cursor:pointer;background:var(--accent);color:var(--bg);border:none;border-radius:6px;padding:0">+</button>
-        <button data-id="debts" onClick="{{ toggleMinimize }}" aria-label="Minimize" style="width:22px;height:22px;flex:none;font-family:var(--font);font-size:14px;line-height:1;background:transparent;border:1px solid var(--divider);border-radius:6px;color:var(--text);cursor:pointer;padding:0">{{ w.debts.minIcon }}</button>
-        <button data-id="debts" onClick="{{ hideWidget }}" aria-label="Hide" style="width:22px;height:22px;flex:none;font-family:var(--font);font-size:14px;line-height:1;background:transparent;border:1px solid var(--divider);border-radius:6px;color:var(--text);cursor:pointer;padding:0">&times;</button>
-      </div>
-      <sc-if value="{{ w.debts.open }}" hint-placeholder-val="{{ true }}">
-        <div style="padding:16px;overflow:auto;flex:1">
-          <div style="display:flex;flex-direction:column;gap:22px">
-            <sc-for list="{{ debts }}" as="d" hint-placeholder-count="1">
-              <div>
-                <div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:8px">
-                  <input value="{{ d.name }}" data-id="{{ d.id }}" data-field="name" onChange="{{ onDebt }}" style="font-family:'Bodoni Moda',Georgia,serif;font-weight:600;font-size:23px;letter-spacing:0.01em;padding:4px 8px;border:1px solid transparent;border-radius:6px;background:transparent;color:var(--text);min-width:0">
-                  <div style="font-size:13px;opacity:0.7;flex:none">{{ d.paidMonths }}/{{ d.total }} · {{ d.progress }}%</div>
-                  <button data-id="{{ d.id }}" onClick="{{ removeDebt }}" aria-label="Remove debt" style="font-size:16px;color:var(--muted);background:transparent;border:none;cursor:pointer;padding:2px">×</button>
-                </div>
-                <div style="height:10px;background:var(--surface);border-radius:999px;margin-bottom:14px">
-                  <div style="height:10px;width:{{ d.progress }}%;background:var(--accent);border-radius:999px"></div>
-                </div>
-                <div style="display:flex;gap:26px;flex-wrap:wrap;margin-bottom:12px">
-                  <div><div style="font-size:12px;opacity:0.55;margin-bottom:3px">Balance</div><div style="font-family:var(--font);font-weight:800;font-size:20px">{{ d.balanceFmt }}</div></div>
-                  <div><div style="font-size:12px;opacity:0.55;margin-bottom:3px">Monthly (1st)</div><div style="font-family:var(--font);font-weight:800;font-size:20px">{{ d.monthlyFmt }}</div></div>
-                  <div><div style="font-size:12px;opacity:0.55;margin-bottom:3px">Paid off by</div><div style="font-family:var(--font);font-weight:800;font-size:20px">{{ d.payoffDate }}</div></div>
-                </div>
-                <div style="display:flex;gap:10px;flex-wrap:wrap">
-                  <label style="font-size:11px;opacity:0.7">Balance £<input value="{{ d.balance }}" data-id="{{ d.id }}" data-field="balance" onChange="{{ onDebt }}" type="number" style="width:110px;margin-left:4px;font-family:var(--font);font-size:13px;padding:6px 8px;border:1px solid var(--divider);border-radius:6px;background:var(--surface);color:var(--text)"></label>
-                  <label style="font-size:11px;opacity:0.7">Monthly £<input value="{{ d.monthly }}" data-id="{{ d.id }}" data-field="monthly" onChange="{{ onDebt }}" type="number" style="width:90px;margin-left:4px;font-family:var(--font);font-size:13px;padding:6px 8px;border:1px solid var(--divider);border-radius:6px;background:var(--surface);color:var(--text)"></label>
-                  <label style="font-size:11px;opacity:0.7">Rate %<input value="{{ d.rate }}" data-id="{{ d.id }}" data-field="rate" onChange="{{ onDebt }}" type="number" style="width:70px;margin-left:4px;font-family:var(--font);font-size:13px;padding:6px 8px;border:1px solid var(--divider);border-radius:6px;background:var(--surface);color:var(--text)"></label>
-                  <label style="font-size:11px;opacity:0.7">Paid<input value="{{ d.paidMonths }}" data-id="{{ d.id }}" data-field="paid" onChange="{{ onDebt }}" type="number" style="width:64px;margin-left:4px;font-family:var(--font);font-size:13px;padding:6px 8px;border:1px solid var(--divider);border-radius:6px;background:var(--surface);color:var(--text)"></label>
-                  <label style="font-size:11px;opacity:0.7">Total<input value="{{ d.total }}" data-id="{{ d.id }}" data-field="total" onChange="{{ onDebt }}" type="number" style="width:64px;margin-left:4px;font-family:var(--font);font-size:13px;padding:6px 8px;border:1px solid var(--divider);border-radius:6px;background:var(--surface);color:var(--text)"></label>
-                </div>
-              </div>
-            </sc-for>
-          </div>
-        </div>
-      </sc-if>
-      <div data-id="debts" onMouseDown="{{ startResize }}" style="position:absolute;right:2px;bottom:2px;width:14px;height:14px;cursor:nwse-resize;opacity:0.45;background:linear-gradient(135deg,transparent 50%,var(--muted) 50%);border-radius:0 0 4px 0"></div>
-    </div>
+<div class="widget" style="{{ w.debts.style }}">
+<div data-id="debts" onMouseDown="{{ startDrag }}" style="cursor:grab;display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid var(--divider);user-select:none;flex:none;background:var(--surface);border-radius:12px 12px 0 0">
+<span style="flex:1;font-weight:800;font-size:13px">Debts</span>
+<button data-id="debts" onClick="{{ addDebtBtn }}" aria-label="Add debt tracker" style="width:22px;height:22px;flex:none;font-size:14px;line-height:1;font-weight:800;cursor:pointer;background:var(--accent);color:var(--bg);border:none;border-radius:6px;padding:0">+</button>
+<button data-id="debts" onClick="{{ toggleMinimize }}" aria-label="Minimize" style="width:22px;height:22px;flex:none;font-family:var(--font);font-size:14px;line-height:1;background:transparent;border:1px solid var(--divider);border-radius:6px;color:var(--text);cursor:pointer;padding:0">{{ w.debts.minIcon }}</button>
+<button data-id="debts" onClick="{{ hideWidget }}" aria-label="Hide" style="width:22px;height:22px;flex:none;font-family:var(--font);font-size:14px;line-height:1;background:transparent;border:1px solid var(--divider);border-radius:6px;color:var(--text);cursor:pointer;padding:0">&times;</button>
+</div>
+<sc-if value="{{ w.debts.open }}" hint-placeholder-val="{{ true }}">
+<div style="padding:16px;overflow:auto;flex:1">
+<div style="display:flex;flex-direction:column;gap:22px">
+<sc-for list="{{ debts }}" as="d" hint-placeholder-count="1">
+<div>
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:8px">
+<input value="{{ d.name }}" data-id="{{ d.id }}" data-field="name" onChange="{{ onDebt }}" style="font-family:'Bodoni Moda',Georgia,serif;font-weight:600;font-size:23px;letter-spacing:0.01em;padding:4px 8px;border:1px solid transparent;border-radius:6px;background:transparent;color:var(--text);min-width:0">
+<div style="font-size:13px;opacity:0.7;flex:none">{{ d.paidMonths }}/{{ d.total }} · {{ d.progress }}%</div>
+<button data-id="{{ d.id }}" onClick="{{ removeDebt }}" aria-label="Remove debt" style="font-size:16px;color:var(--muted);background:transparent;border:none;cursor:pointer;padding:2px">×</button>
+</div>
+<div style="height:10px;background:var(--surface);border-radius:999px;margin-bottom:14px">
+<div style="height:10px;width:{{ d.progress }}%;background:var(--accent);border-radius:999px"></div>
+</div>
+<div style="display:flex;gap:26px;flex-wrap:wrap;margin-bottom:12px">
+<div><div style="font-size:12px;opacity:0.55;margin-bottom:3px">Balance</div><div style="font-family:var(--font);font-weight:800;font-size:20px">{{ d.balanceFmt }}</div></div>
+<div><div style="font-size:12px;opacity:0.55;margin-bottom:3px">Monthly (1st)</div><div style="font-family:var(--font);font-weight:800;font-size:20px">{{ d.monthlyFmt }}</div></div>
+<div><div style="font-size:12px;opacity:0.55;margin-bottom:3px">Paid off by</div><div style="font-family:var(--font);font-weight:800;font-size:20px">{{ d.payoffDate }}</div></div>
+</div>
+<div style="display:flex;gap:10px;flex-wrap:wrap">
+<label style="font-size:11px;opacity:0.7">Balance £<input value="{{ d.balance }}" data-id="{{ d.id }}" data-field="balance" onChange="{{ onDebt }}" type="number" style="width:110px;margin-left:4px;font-family:var(--font);font-size:13px;padding:6px 8px;border:1px solid var(--divider);border-radius:6px;background:var(--surface);color:var(--text)"></label>
+<label style="font-size:11px;opacity:0.7">Monthly £<input value="{{ d.monthly }}" data-id="{{ d.id }}" data-field="monthly" onChange="{{ onDebt }}" type="number" style="width:90px;margin-left:4px;font-family:var(--font);font-size:13px;padding:6px 8px;border:1px solid var(--divider);border-radius:6px;background:var(--surface);color:var(--text)"></label>
+<label style="font-size:11px;opacity:0.7">Rate %<input value="{{ d.rate }}" data-id="{{ d.id }}" data-field="rate" onChange="{{ onDebt }}" type="number" style="width:70px;margin-left:4px;font-family:var(--font);font-size:13px;padding:6px 8px;border:1px solid var(--divider);border-radius:6px;background:var(--surface);color:var(--text)"></label>
+<label style="font-size:11px;opacity:0.7">Paid<input value="{{ d.paidMonths }}" data-id="{{ d.id }}" data-field="paid" onChange="{{ onDebt }}" type="number" style="width:64px;margin-left:4px;font-family:var(--font);font-size:13px;padding:6px 8px;border:1px solid var(--divider);border-radius:6px;background:var(--surface);color:var(--text)"></label>
+<label style="font-size:11px;opacity:0.7">Total<input value="{{ d.total }}" data-id="{{ d.id }}" data-field="total" onChange="{{ onDebt }}" type="number" style="width:64px;margin-left:4px;font-family:var(--font);font-size:13px;padding:6px 8px;border:1px solid var(--divider);border-radius:6px;background:var(--surface);color:var(--text)"></label>
+</div>
+</div>
+</sc-for>
+</div>
+</div>
+</sc-if>
+<div data-id="debts" onMouseDown="{{ startResize }}" style="position:absolute;right:2px;bottom:2px;width:14px;height:14px;cursor:nwse-resize;opacity:0.45;background:linear-gradient(135deg,transparent 50%,var(--muted) 50%);border-radius:0 0 4px 0"></div>
+</div>
 
-    <div class="widget" style="{{ w.shared.style }}">
-      <div data-id="shared" onMouseDown="{{ startDrag }}" style="cursor:grab;display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid var(--divider);user-select:none;flex:none;background:var(--surface);border-radius:12px 12px 0 0">
-        <span style="flex:1;font-weight:800;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Shared — Me &amp; Mike · <span style="color:{{ mikeNetColor }}">{{ mikeNetLabel }}</span></span>
-        <button data-id="shared" onClick="{{ toggleMinimize }}" aria-label="Minimize" style="width:22px;height:22px;flex:none;font-family:var(--font);font-size:14px;line-height:1;background:transparent;border:1px solid var(--divider);border-radius:6px;color:var(--text);cursor:pointer;padding:0">{{ w.shared.minIcon }}</button>
-        <button data-id="shared" onClick="{{ hideWidget }}" aria-label="Hide" style="width:22px;height:22px;flex:none;font-family:var(--font);font-size:14px;line-height:1;background:transparent;border:1px solid var(--divider);border-radius:6px;color:var(--text);cursor:pointer;padding:0">&times;</button>
-      </div>
-      <sc-if value="{{ w.shared.open }}" hint-placeholder-val="{{ true }}">
-        <div style="padding:16px;overflow:auto;flex:1">
-          <div style="display:flex;gap:10px;font-size:11px;letter-spacing:0.06em;text-transform:uppercase;opacity:0.55;padding-bottom:8px;border-bottom:2px solid var(--divider)">
-            <div style="width:40px;flex:none"></div><div style="flex:1">Item</div><div style="width:130px;flex:none;text-align:right">Amount</div><div style="width:30px;flex:none"></div>
-          </div>
-          <sc-for list="{{ mike }}" as="m" hint-placeholder-count="3">
-            <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--hairline)">
-              <button data-id="{{ m.id }}" onClick="{{ toggleMikeSign }}" aria-label="Toggle owed direction" style="width:40px;flex:none;font-family:var(--font);font-weight:800;font-size:16px;padding:6px 0;cursor:pointer;background:{{ m.signBg }};color:{{ m.signColor }};border:1px solid var(--divider);border-radius:6px">{{ m.signLabel }}</button>
-              <input value="{{ m.item }}" data-id="{{ m.id }}" data-field="item" onChange="{{ onMike }}" style="flex:1;min-width:0;font-family:var(--font);font-size:13px;padding:7px 10px;border:1px solid var(--divider);border-radius:6px;background:var(--surface);color:var(--text)">
-              <div style="width:130px;flex:none;display:flex;align-items:center;gap:2px"><span style="opacity:0.6;font-size:13px">£</span><input value="{{ m.amount }}" data-id="{{ m.id }}" data-field="amount" onChange="{{ onMike }}" type="number" step="0.01" style="width:100%;text-align:right;font-family:var(--font);font-size:13px;padding:7px 8px;border:1px solid var(--divider);border-radius:6px;background:var(--surface);color:var(--text)"></div>
-              <button data-id="{{ m.id }}" onClick="{{ removeMike }}" aria-label="Remove row" style="width:30px;flex:none;font-size:16px;color:var(--muted);background:transparent;border:none;cursor:pointer;padding:2px">×</button>
-            </div>
-          </sc-for>
-          <button onClick="{{ addMike }}" style="margin-top:12px;font-family:var(--font);font-weight:800;font-size:13px;padding:8px 16px;cursor:pointer;background:transparent;color:var(--accent);border:1px solid var(--divider);border-radius:8px">Add row</button>
-          <p style="font-size:11px;opacity:0.55;margin:12px 0 0;line-height:1.5"><strong>+</strong> Mike owes you · <strong>−</strong> you owe Mike. All editable.</p>
-        </div>
-      </sc-if>
-      <div data-id="shared" onMouseDown="{{ startResize }}" style="position:absolute;right:2px;bottom:2px;width:14px;height:14px;cursor:nwse-resize;opacity:0.45;background:linear-gradient(135deg,transparent 50%,var(--muted) 50%);border-radius:0 0 4px 0"></div>
-    </div>
+<div class="widget" style="{{ w.shared.style }}">
+<div data-id="shared" onMouseDown="{{ startDrag }}" style="cursor:grab;display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid var(--divider);user-select:none;flex:none;background:var(--surface);border-radius:12px 12px 0 0">
+<span style="flex:1;font-weight:800;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Shared — Me &amp; Mike · <span style="color:{{ mikeNetColor }}">{{ mikeNetLabel }}</span></span>
+<button data-id="shared" onClick="{{ toggleMinimize }}" aria-label="Minimize" style="width:22px;height:22px;flex:none;font-family:var(--font);font-size:14px;line-height:1;background:transparent;border:1px solid var(--divider);border-radius:6px;color:var(--text);cursor:pointer;padding:0">{{ w.shared.minIcon }}</button>
+<button data-id="shared" onClick="{{ hideWidget }}" aria-label="Hide" style="width:22px;height:22px;flex:none;font-family:var(--font);font-size:14px;line-height:1;background:transparent;border:1px solid var(--divider);border-radius:6px;color:var(--text);cursor:pointer;padding:0">&times;</button>
+</div>
+<sc-if value="{{ w.shared.open }}" hint-placeholder-val="{{ true }}">
+<div style="padding:16px;overflow:auto;flex:1">
+<div style="display:flex;gap:10px;font-size:11px;letter-spacing:0.06em;text-transform:uppercase;opacity:0.55;padding-bottom:8px;border-bottom:2px solid var(--divider)">
+<div style="width:40px;flex:none"></div><div style="flex:1">Item</div><div style="width:130px;flex:none;text-align:right">Amount</div><div style="width:30px;flex:none"></div>
+</div>
+<sc-for list="{{ mike }}" as="m" hint-placeholder-count="3">
+<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--hairline)">
+<button data-id="{{ m.id }}" onClick="{{ toggleMikeSign }}" aria-label="Toggle owed direction" style="width:40px;flex:none;font-family:var(--font);font-weight:800;font-size:16px;padding:6px 0;cursor:pointer;background:{{ m.signBg }};color:{{ m.signColor }};border:1px solid var(--divider);border-radius:6px">{{ m.signLabel }}</button>
+<input value="{{ m.item }}" data-id="{{ m.id }}" data-field="item" onChange="{{ onMike }}" style="flex:1;min-width:0;font-family:var(--font);font-size:13px;padding:7px 10px;border:1px solid var(--divider);border-radius:6px;background:var(--surface);color:var(--text)">
+<div style="width:130px;flex:none;display:flex;align-items:center;gap:2px"><span style="opacity:0.6;font-size:13px">£</span><input value="{{ m.amount }}" data-id="{{ m.id }}" data-field="amount" onChange="{{ onMike }}" type="number" step="0.01" style="width:100%;text-align:right;font-family:var(--font);font-size:13px;padding:7px 8px;border:1px solid var(--divider);border-radius:6px;background:var(--surface);color:var(--text)"></div>
+<button data-id="{{ m.id }}" onClick="{{ removeMike }}" aria-label="Remove row" style="width:30px;flex:none;font-size:16px;color:var(--muted);background:transparent;border:none;cursor:pointer;padding:2px">×</button>
+</div>
+</sc-for>
+<button onClick="{{ addMike }}" style="margin-top:12px;font-family:var(--font);font-weight:800;font-size:13px;padding:8px 16px;cursor:pointer;background:transparent;color:var(--accent);border:1px solid var(--divider);border-radius:8px">Add row</button>
+<p style="font-size:11px;opacity:0.55;margin:12px 0 0;line-height:1.5"><strong>+</strong> Mike owes you · <strong>−</strong> you owe Mike. All editable.</p>
+</div>
+</sc-if>
+<div data-id="shared" onMouseDown="{{ startResize }}" style="position:absolute;right:2px;bottom:2px;width:14px;height:14px;cursor:nwse-resize;opacity:0.45;background:linear-gradient(135deg,transparent 50%,var(--muted) 50%);border-radius:0 0 4px 0"></div>
+</div>
 
-    <div class="widget" style="{{ w.overtime.style }}">
-      <div data-id="overtime" onMouseDown="{{ startDrag }}" style="cursor:grab;display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid var(--divider);user-select:none;flex:none;background:var(--surface);border-radius:12px 12px 0 0">
-        <span style="flex:1;font-weight:800;font-size:13px">Overtime &amp; tax</span>
-        <button data-id="overtime" onClick="{{ toggleMinimize }}" aria-label="Minimize" style="width:22px;height:22px;flex:none;font-family:var(--font);font-size:14px;line-height:1;background:transparent;border:1px solid var(--divider);border-radius:6px;color:var(--text);cursor:pointer;padding:0">{{ w.overtime.minIcon }}</button>
-        <button data-id="overtime" onClick="{{ hideWidget }}" aria-label="Hide" style="width:22px;height:22px;flex:none;font-family:var(--font);font-size:14px;line-height:1;background:transparent;border:1px solid var(--divider);border-radius:6px;color:var(--text);cursor:pointer;padding:0">&times;</button>
-      </div>
-      <sc-if value="{{ w.overtime.open }}" hint-placeholder-val="{{ true }}">
-        <div style="padding:16px;overflow:auto;flex:1">
-          <div style="display:flex;gap:14px;flex-wrap:wrap;align-items:flex-end;margin-bottom:18px">
-            <label style="font-size:11px;opacity:0.7">Date<br><input value="{{ otDate }}" data-field="date" onChange="{{ onOt }}" type="date" style="margin-top:4px;font-family:var(--font);font-size:13px;padding:7px 10px;border:1px solid var(--divider);border-radius:6px;background:var(--surface);color:var(--text)"></label>
-            <label style="font-size:11px;opacity:0.7">OT hours<br><input value="{{ otHours }}" data-field="hours" onChange="{{ onOt }}" type="number" style="margin-top:4px;width:90px;font-family:var(--font);font-size:13px;padding:7px 10px;border:1px solid var(--divider);border-radius:6px;background:var(--surface);color:var(--text)"></label>
-            <label style="font-size:11px;opacity:0.7">£/hr after tax<br><input value="{{ otAfter }}" data-field="after" onChange="{{ onOt }}" type="number" step="0.01" style="margin-top:4px;width:90px;font-family:var(--font);font-size:13px;padding:7px 10px;border:1px solid var(--divider);border-radius:6px;background:var(--surface);color:var(--text)"></label>
-            <label style="font-size:11px;opacity:0.7">£/hr before tax<br><input value="{{ otBefore }}" data-field="before" onChange="{{ onOt }}" type="number" step="0.01" style="margin-top:4px;width:90px;font-family:var(--font);font-size:13px;padding:7px 10px;border:1px solid var(--divider);border-radius:6px;background:var(--surface);color:var(--text)"></label>
-            <button onClick="{{ toggleHalf }}" style="font-family:var(--font);font-weight:800;font-size:13px;padding:8px 16px;cursor:pointer;background:{{ otHalfBg }};color:{{ otHalfColor }};border:1px solid var(--divider);border-radius:8px">1.5× {{ otHalfState }}</button>
-          </div>
-          <div style="display:flex;gap:24px;flex-wrap:wrap">
-            <div><div style="font-size:12px;opacity:0.55;margin-bottom:3px">OT gross</div><div style="font-family:var(--font);font-weight:800;font-size:20px">{{ otGross }}</div></div>
-            <div><div style="font-size:12px;opacity:0.55;margin-bottom:3px">Tax on OT</div><div style="font-family:var(--font);font-weight:800;font-size:20px;color:var(--accent-deep)">{{ otTax }}</div></div>
-            <div><div style="font-size:12px;opacity:0.55;margin-bottom:3px">OT take-home</div><div style="font-family:var(--font);font-weight:800;font-size:20px">{{ otNet }}</div></div>
-          </div>
-        </div>
-      </sc-if>
-      <div data-id="overtime" onMouseDown="{{ startResize }}" style="position:absolute;right:2px;bottom:2px;width:14px;height:14px;cursor:nwse-resize;opacity:0.45;background:linear-gradient(135deg,transparent 50%,var(--muted) 50%);border-radius:0 0 4px 0"></div>
-    </div>
+<div class="widget" style="{{ w.overtime.style }}">
+<div data-id="overtime" onMouseDown="{{ startDrag }}" style="cursor:grab;display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid var(--divider);user-select:none;flex:none;background:var(--surface);border-radius:12px 12px 0 0">
+<span style="flex:1;font-weight:800;font-size:13px">Overtime &amp; tax</span>
+<button data-id="overtime" onClick="{{ toggleMinimize }}" aria-label="Minimize" style="width:22px;height:22px;flex:none;font-family:var(--font);font-size:14px;line-height:1;background:transparent;border:1px solid var(--divider);border-radius:6px;color:var(--text);cursor:pointer;padding:0">{{ w.overtime.minIcon }}</button>
+<button data-id="overtime" onClick="{{ hideWidget }}" aria-label="Hide" style="width:22px;height:22px;flex:none;font-family:var(--font);font-size:14px;line-height:1;background:transparent;border:1px solid var(--divider);border-radius:6px;color:var(--text);cursor:pointer;padding:0">&times;</button>
+</div>
+<sc-if value="{{ w.overtime.open }}" hint-placeholder-val="{{ true }}">
+<div style="padding:16px;overflow:auto;flex:1">
+<div style="display:flex;gap:14px;flex-wrap:wrap;align-items:flex-end;margin-bottom:18px">
+<label style="font-size:11px;opacity:0.7">Date<br><input value="{{ otDate }}" data-field="date" onChange="{{ onOt }}" type="date" style="margin-top:4px;font-family:var(--font);font-size:13px;padding:7px 10px;border:1px solid var(--divider);border-radius:6px;background:var(--surface);color:var(--text)"></label>
+<label style="font-size:11px;opacity:0.7">OT hours<br><input value="{{ otHours }}" data-field="hours" onChange="{{ onOt }}" type="number" style="margin-top:4px;width:90px;font-family:var(--font);font-size:13px;padding:7px 10px;border:1px solid var(--divider);border-radius:6px;background:var(--surface);color:var(--text)"></label>
+<label style="font-size:11px;opacity:0.7">£/hr after tax<br><input value="{{ otAfter }}" data-field="after" onChange="{{ onOt }}" type="number" step="0.01" style="margin-top:4px;width:90px;font-family:var(--font);font-size:13px;padding:7px 10px;border:1px solid var(--divider);border-radius:6px;background:var(--surface);color:var(--text)"></label>
+<label style="font-size:11px;opacity:0.7">£/hr before tax<br><input value="{{ otBefore }}" data-field="before" onChange="{{ onOt }}" type="number" step="0.01" style="margin-top:4px;width:90px;font-family:var(--font);font-size:13px;padding:7px 10px;border:1px solid var(--divider);border-radius:6px;background:var(--surface);color:var(--text)"></label>
+<button onClick="{{ toggleHalf }}" style="font-family:var(--font);font-weight:800;font-size:13px;padding:8px 16px;cursor:pointer;background:{{ otHalfBg }};color:{{ otHalfColor }};border:1px solid var(--divider);border-radius:8px">1.5× {{ otHalfState }}</button>
+</div>
+<div style="display:flex;gap:24px;flex-wrap:wrap">
+<div><div style="font-size:12px;opacity:0.55;margin-bottom:3px">OT gross</div><div style="font-family:var(--font);font-weight:800;font-size:20px">{{ otGross }}</div></div>
+<div><div style="font-size:12px;opacity:0.55;margin-bottom:3px">Tax on OT</div><div style="font-family:var(--font);font-weight:800;font-size:20px;color:var(--accent-deep)">{{ otTax }}</div></div>
+<div><div style="font-size:12px;opacity:0.55;margin-bottom:3px">OT take-home</div><div style="font-family:var(--font);font-weight:800;font-size:20px">{{ otNet }}</div></div>
+</div>
+</div>
+</sc-if>
+<div data-id="overtime" onMouseDown="{{ startResize }}" style="position:absolute;right:2px;bottom:2px;width:14px;height:14px;cursor:nwse-resize;opacity:0.45;background:linear-gradient(135deg,transparent 50%,var(--muted) 50%);border-radius:0 0 4px 0"></div>
+</div>
 
-  </div>
+</div>
 </div>
 </x-dc>
 <script type="text/x-dc" data-dc-script>
@@ -283,18 +283,18 @@ function saveInc(v){try{localStorage.setItem('halcyon-income',JSON.stringify(v))
 function loadExtraInc(){try{var v=JSON.parse(localStorage.getItem('halcyon-income-extra'));if(Array.isArray(v))return v;}catch(x){}return [];}
 function saveExtraInc(v){try{localStorage.setItem('halcyon-income-extra',JSON.stringify(v));}catch(x){}return v;}
 var DEBT_SEED = [
-  { id: 101, name: 'Fluted Candlestick Antique Brass Table Lamp Base', balance: 152.31, monthly: 50.77, rate: 0, paid: 9, total: 12, original: 702.95 },
-  { id: 102, name: 'Pure Cotton Fitted Sheet', balance: 85.35, monthly: 28.45, rate: 0, paid: 9, total: 12, original: 401.00 },
-  { id: 103, name: 'PCSPECIALIST Flux 500 Gaming PC \u2014 Intel Core i7', balance: 1186.11, monthly: 99.37, rate: 29.9, paid: 22, total: 36, original: 2452.00 },
-  { id: 104, name: 'CRICUT Maker 3 DIY Digital Cutting Machine', balance: 258.65, monthly: 20.45, rate: 29.9, paid: 21, total: 36, original: 509.97 },
-  { id: 105, name: 'Fortia Vertical 3 Lite Clear Glazed Contemporary N', balance: 337.00, monthly: 84.25, rate: 0, paid: 9, total: 12, original: 1011.06 },
-  { id: 106, name: 'RING Battery Video Doorbell 3rd Gen \u2014 Venetian B', balance: 73.08, monthly: 10.06, rate: 29.9, paid: 16, total: 24, original: 185.97 },
-  { id: 107, name: 'PINE TORUS SKIRTING 15MMX119MMX24M', balance: 295.75, monthly: 23.04, rate: 17.9, paid: 8, total: 21, original: 417.63 }
+{ id: 101, name: 'Fluted Candlestick Antique Brass Table Lamp Base', balance: 152.31, monthly: 50.77, rate: 0, paid: 9, total: 12, original: 702.95 },
+{ id: 102, name: 'Pure Cotton Fitted Sheet', balance: 85.35, monthly: 28.45, rate: 0, paid: 9, total: 12, original: 401.00 },
+{ id: 103, name: 'PCSPECIALIST Flux 500 Gaming PC \u2014 Intel Core i7', balance: 1186.11, monthly: 99.37, rate: 29.9, paid: 22, total: 36, original: 2452.00 },
+{ id: 104, name: 'CRICUT Maker 3 DIY Digital Cutting Machine', balance: 258.65, monthly: 20.45, rate: 29.9, paid: 21, total: 36, original: 509.97 },
+{ id: 105, name: 'Fortia Vertical 3 Lite Clear Glazed Contemporary N', balance: 337.00, monthly: 84.25, rate: 0, paid: 9, total: 12, original: 1011.06 },
+{ id: 106, name: 'RING Battery Video Doorbell 3rd Gen \u2014 Venetian B', balance: 73.08, monthly: 10.06, rate: 29.9, paid: 16, total: 24, original: 185.97 },
+{ id: 107, name: 'PINE TORUS SKIRTING 15MMX119MMX24M', balance: 295.75, monthly: 23.04, rate: 17.9, paid: 8, total: 21, original: 417.63 }
 ];
 function loadDebts(){try{var v=JSON.parse(localStorage.getItem('halcyon-debts'));if(Array.isArray(v))return v;}catch(x){}
-  /* seed once \u2014 after this, removing a debt sticks and it never comes back */
-  try{localStorage.setItem('halcyon-debts',JSON.stringify(DEBT_SEED));}catch(x){}
-  return DEBT_SEED.slice();}
+/* seed once \u2014 after this, removing a debt sticks and it never comes back */
+try{localStorage.setItem('halcyon-debts',JSON.stringify(DEBT_SEED));}catch(x){}
+return DEBT_SEED.slice();}
 function saveDebts(v){try{localStorage.setItem('halcyon-debts',JSON.stringify(v));}catch(x){}return v;}
 function loadMike(){try{var v=JSON.parse(localStorage.getItem('halcyon-mike'));if(Array.isArray(v))return v;}catch(x){}return [];}
 function saveMike(v){try{localStorage.setItem('halcyon-mike',JSON.stringify(v));}catch(x){}return v;}
@@ -311,20 +311,20 @@ function easter(y){var a=y%19,b=Math.floor(y/100),c=y%100,d=Math.floor(b/4),e=b%
 function nthMonday(y,mo,last){var d=new Date(y,mo,1);if(last){d=new Date(y,mo+1,0);while(d.getDay()!==1)d.setDate(d.getDate()-1);}else{while(d.getDay()!==1)d.setDate(d.getDate()+1);}return d;}
 function sub(d){var day=d.getDay();if(day===6)return new Date(d.getFullYear(),d.getMonth(),d.getDate()+2);if(day===0)return new Date(d.getFullYear(),d.getMonth(),d.getDate()+1);return d;}
 function bankHolidays(y){
-  var e=easter(y);var out={};
-  [sub(new Date(y,0,1)), new Date(e.getFullYear(),e.getMonth(),e.getDate()-2), new Date(e.getFullYear(),e.getMonth(),e.getDate()+1), nthMonday(y,4,false), nthMonday(y,4,true), nthMonday(y,7,true), sub(new Date(y,11,25)), sub(new Date(y,11,26))].forEach(function(d){out[iso(d)]=true;});
-  return out;
+var e=easter(y);var out={};
+[sub(new Date(y,0,1)), new Date(e.getFullYear(),e.getMonth(),e.getDate()-2), new Date(e.getFullYear(),e.getMonth(),e.getDate()+1), nthMonday(y,4,false), nthMonday(y,4,true), nthMonday(y,7,true), sub(new Date(y,11,25)), sub(new Date(y,11,26))].forEach(function(d){out[iso(d)]=true;});
+return out;
 }
 
 const WIDGET_IDS = ['summary','income','bills','debts','shared','overtime'];
 const WIDGET_TITLES = { summary:'This month', income:'Income', bills:'Bills', debts:'Debts', shared:'Shared — Me & Mike', overtime:'Overtime & tax' };
 const DEFAULT_LAYOUT = {
-  summary:  { x: 0,    y: 0,    w: 100, h: 150 },
-  income:   { x: 0,    y: 170,  w: 55,  h: 520 },
-  bills:    { x: 56.5, y: 170,  w: 43.5, h: 330 },
-  debts:    { x: 56.5, y: 520,  w: 43.5, h: 1835 },
-  shared:   { x: 0,    y: 710,  w: 55,  h: 400 },
-  overtime: { x: 0,    y: 1130, w: 55,  h: 330 },
+summary: { x: 0, y: 0, w: 100, h: 150 },
+income: { x: 0, y: 170, w: 55, h: 520 },
+bills: { x: 56.5, y: 170, w: 43.5, h: 330 },
+debts: { x: 56.5, y: 520, w: 43.5, h: 1835 },
+shared: { x: 0, y: 710, w: 55, h: 400 },
+overtime: { x: 0, y: 1130, w: 55, h: 330 },
 };
 const LKEY = 'halcyon-widget-layout-budget-v5', MKEY = 'halcyon-widget-min-budget', HKEY = 'halcyon-widget-hidden-budget';
 function loadLayout(){ try{ var v=JSON.parse(localStorage.getItem(LKEY)); if(v){ var out={}; WIDGET_IDS.forEach(function(id){ out[id]=v[id]||DEFAULT_LAYOUT[id]; }); return out; } }catch(x){} return JSON.parse(JSON.stringify(DEFAULT_LAYOUT)); }
@@ -335,209 +335,153 @@ function loadHidden(){ try{ return JSON.parse(localStorage.getItem(HKEY))||{}; }
 function saveHidden(v){ try{ localStorage.setItem(HKEY, JSON.stringify(v)); }catch(x){} }
 
 class Component extends DCLogic {
-  state = {
-    theme: loadTheme(), mainTheme: loadMain(),
-    ...loadInc(),
-    extraIncome: loadExtraInc(),
-    billsSheet: loadLS('halcyon-bills-sheet'), billsSheetInput: loadLS('halcyon-bills-sheet'), bills: null, billsStatus: '',
-    debts: loadDebts(),
-    mike: loadMike(),
-    ot: loadOt(),
-    layout: loadLayout(), minimized: loadMin(), hidden: loadHidden(), zIndex: {}, zTop: 10,
-  };
+state = {
+theme: loadTheme(), mainTheme: loadMain(),
+...loadInc(),
+extraIncome: loadExtraInc(),
+billsSheet: loadLS('halcyon-bills-sheet'), billsSheetInput: loadLS('halcyon-bills-sheet'), bills: null, billsStatus: '',
+debts: loadDebts(),
+mike: loadMike(),
+ot: loadOt(),
+layout: loadLayout(), minimized: loadMin(), hidden: loadHidden(), zIndex: {}, zTop: 10,
+};
 
-  componentDidMount(){ if(this.state.billsSheet) this.doBills(this.state.billsSheet); }
+componentDidMount(){ if(this.state.billsSheet) this.doBills(this.state.billsSheet); }
 
-  setTheme = (e) => { const v = e.currentTarget.value; saveTheme(v); this.setState({ theme: v }); };
-  setMain = (e) => { const v = e.currentTarget.value; saveMain(v); this.setState({ mainTheme: v }); };
+setTheme = (e) => { const v = e.currentTarget.value; saveTheme(v); this.setState({ theme: v }); };
+setMain = (e) => { const v = e.currentTarget.value; saveMain(v); this.setState({ mainTheme: v }); };
 
-  onInc = (e) => { var f=e.currentTarget.dataset.field, v=e.target.value; this.setState({[f]:v}, () => { var s=this.state; saveInc({salary:s.salary,cbWeekly:s.cbWeekly,cbMonth:s.cbMonth,maintenance:s.maintenance,additional:s.additional}); }); };
+onInc = (e) => { var f=e.currentTarget.dataset.field, v=e.target.value; this.setState({[f]:v}, () => { var s=this.state; saveInc({salary:s.salary,cbWeekly:s.cbWeekly,cbMonth:s.cbMonth,maintenance:s.maintenance,additional:s.additional}); }); };
 
-  onExtraIncome = (e) => { var id=Number(e.currentTarget.dataset.id), f=e.currentTarget.dataset.field, v=e.target.value; this.setState(function(s){return {extraIncome:saveExtraInc(s.extraIncome.map(function(x){return x.id===id?Object.assign({},x,{[f]:v}):x;}))};}); };
-  addExtraIncome = () => this.setState(function(s){return {extraIncome:saveExtraInc(s.extraIncome.concat([{id:Date.now(),name:'',amount:0}]))};});
-  removeExtraIncome = (e) => { var id=Number(e.currentTarget.dataset.id); this.setState(function(s){return {extraIncome:saveExtraInc(s.extraIncome.filter(function(x){return x.id!==id;}))};}); };
+onExtraIncome = (e) => { var id=Number(e.currentTarget.dataset.id), f=e.currentTarget.dataset.field, v=e.target.value; this.setState(function(s){return {extraIncome:saveExtraInc(s.extraIncome.map(function(x){return x.id===id?Object.assign({},x,{[f]:v}):x;}))};}); };
+addExtraIncome = () => this.setState(function(s){return {extraIncome:saveExtraInc(s.extraIncome.concat([{id:Date.now(),name:'',amount:0}]))};});
+removeExtraIncome = (e) => { var id=Number(e.currentTarget.dataset.id); this.setState(function(s){return {extraIncome:saveExtraInc(s.extraIncome.filter(function(x){return x.id!==id;}))};}); };
 
-  onBillsInput = (e) => this.setState({ billsSheetInput: e.target.value });
-  doBills = (url) => {
-    var self=this; this.setState({billsStatus:'Syncing…'});
-    return fetch(url).then(function(r){if(!r.ok)throw new Error('bad');return r.text();}).then(function(t){
-      var rows=String(t||'').split(/\r?\n/).map(function(l){return l.trim();}).filter(Boolean).map(function(l){return l.split(',').map(function(c){return c.replace(/^"|"$/g,'').trim();});});
-      saveLS('halcyon-bills-sheet',url);
-      self.setState({bills:rows, billsSheet:url, billsStatus:'Synced '+Math.max(0,rows.length-1)+' bills.'});
-    }).catch(function(){ self.setState({billsStatus:"Couldn't read that link — in Sheets: File → Share → Publish to web → CSV, then paste that link."}); });
-  };
-  syncBills = () => { var u=(this.state.billsSheetInput||'').trim(); if(!u){this.setState({billsStatus:'Paste your published sheet CSV link first.'});return;} this.doBills(u); };
+onBillsInput = (e) => this.setState({ billsSheetInput: e.target.value });
+doBills = (url) => {
+var self=this; this.setState({billsStatus:'Syncing…'});
+return fetch(url).then(function(r){if(!r.ok)throw new Error('bad');return r.text();}).then(function(t){
+var rows=String(t||'').split(/\r?\n/).map(function(l){return l.trim();}).filter(Boolean).map(function(l){return l.split(',').map(function(c){return c.replace(/^"|"$/g,'').trim();});});
+saveLS('halcyon-bills-sheet',url);
+self.setState({bills:rows, billsSheet:url, billsStatus:'Synced '+Math.max(0,rows.length-1)+' bills.'});
+}).catch(function(){ self.setState({billsStatus:"Couldn't read that link — in Sheets: File → Share → Publish to web → CSV, then paste that link."}); });
+};
+syncBills = () => { var u=(this.state.billsSheetInput||'').trim(); if(!u){this.setState({billsStatus:'Paste your published sheet CSV link first.'});return;} this.doBills(u); };
 
-  onDebt = (e) => { var id=Number(e.currentTarget.dataset.id), f=e.currentTarget.dataset.field, v=e.target.value; this.setState(function(s){return {debts:saveDebts(s.debts.map(function(d){return d.id===id?Object.assign({},d,{[f]:v}):d;}))};}); };
-  addDebtBtn = (e) => { e.stopPropagation(); this.setState(function(s){return {debts:saveDebts(s.debts.concat([{id:Date.now(),name:'New debt',balance:0,monthly:0,rate:0,paid:0,total:12,original:0}]))};}); };
-  removeDebt = (e) => { var id=Number(e.currentTarget.dataset.id); this.setState(function(s){return {debts:saveDebts(s.debts.filter(function(d){return d.id!==id;}))};}); };
+onDebt = (e) => { var id=Number(e.currentTarget.dataset.id), f=e.currentTarget.dataset.field, v=e.target.value; this.setState(function(s){return {debts:saveDebts(s.debts.map(function(d){return d.id===id?Object.assign({},d,{[f]:v}):d;}))};}); };
+addDebtBtn = (e) => { e.stopPropagation(); this.setState(function(s){return {debts:saveDebts(s.debts.concat([{id:Date.now(),name:'New debt',balance:0,monthly:0,rate:0,paid:0,total:12,original:0}]))};}); };
+removeDebt = (e) => { var id=Number(e.currentTarget.dataset.id); this.setState(function(s){return {debts:saveDebts(s.debts.filter(function(d){return d.id!==id;}))};}); };
 
-  onMike = (e) => { var id=Number(e.currentTarget.dataset.id), f=e.currentTarget.dataset.field, v=e.target.value; this.setState(function(s){return {mike:saveMike(s.mike.map(function(m){return m.id===id?Object.assign({},m,{[f]:v}):m;}))};}); };
-  toggleMikeSign = (e) => { var id=Number(e.currentTarget.dataset.id); this.setState(function(s){return {mike:saveMike(s.mike.map(function(m){return m.id===id?Object.assign({},m,{sign:m.sign>0?-1:1}):m;}))};}); };
-  addMike = () => this.setState(function(s){return {mike:saveMike(s.mike.concat([{id:Date.now(),item:'',amount:0,sign:1}]))};});
-  removeMike = (e) => { var id=Number(e.currentTarget.dataset.id); this.setState(function(s){return {mike:saveMike(s.mike.filter(function(m){return m.id!==id;}))};}); };
+onMike = (e) => { var id=Number(e.currentTarget.dataset.id), f=e.currentTarget.dataset.field, v=e.target.value; this.setState(function(s){return {mike:saveMike(s.mike.map(function(m){return m.id===id?Object.assign({},m,{[f]:v}):m;}))};}); };
+toggleMikeSign = (e) => { var id=Number(e.currentTarget.dataset.id); this.setState(function(s){return {mike:saveMike(s.mike.map(function(m){return m.id===id?Object.assign({},m,{sign:m.sign>0?-1:1}):m;}))};}); };
+addMike = () => this.setState(function(s){return {mike:saveMike(s.mike.concat([{id:Date.now(),item:'',amount:0,sign:1}]))};});
+removeMike = (e) => { var id=Number(e.currentTarget.dataset.id); this.setState(function(s){return {mike:saveMike(s.mike.filter(function(m){return m.id!==id;}))};}); };
 
-  onOt = (e) => { var f=e.currentTarget.dataset.field, v=e.target.value; this.setState(function(s){return {ot:saveOt(Object.assign({},s.ot,{[f]:v}))};}); };
-  toggleHalf = () => this.setState(function(s){return {ot:Object.assign({},s.ot,{half:!s.ot.half})};});
+onOt = (e) => { var f=e.currentTarget.dataset.field, v=e.target.value; this.setState(function(s){return {ot:saveOt(Object.assign({},s.ot,{[f]:v}))};}); };
+toggleHalf = () => this.setState(function(s){return {ot:Object.assign({},s.ot,{half:!s.ot.half})};});
 
-  canvasRef = (el) => { this.canvasEl = el; };
-  canvasWidth = () => (this.canvasEl && this.canvasEl.getBoundingClientRect().width) || 1120;
+canvasRef = (el) => { this.canvasEl = el; };
+canvasWidth = () => (this.canvasEl && this.canvasEl.getBoundingClientRect().width) || 1120;
 
-  bringToFront = (id) => { const z = (this.state.zTop || 10) + 1; this.setState(s => ({ zTop: z, zIndex: { ...s.zIndex, [id]: z } })); };
-  startDrag = (e) => {
-    if (e.button !== undefined && e.button !== 0) return;
-    const id = e.currentTarget.dataset.id;
-    this.bringToFront(id);
-    const l = this.state.layout[id] || DEFAULT_LAYOUT[id];
-    this._drag = { id, startX: e.clientX, startY: e.clientY, origX: l.x, origY: l.y };
-    window.addEventListener('mousemove', this.onDragMove);
-    window.addEventListener('mouseup', this.onDragEnd);
-    e.preventDefault();
-  };
-  onDragMove = (e) => {
-    if (!this._drag) return;
-    const pct = 100 / this.canvasWidth();
-    const dx = (e.clientX - this._drag.startX) * pct, dy = e.clientY - this._drag.startY, id = this._drag.id;
-    this.setState(s => ({ layout: { ...s.layout, [id]: { ...s.layout[id], x: Math.max(0, Math.min(100, this._drag.origX + dx)), y: Math.max(0, this._drag.origY + dy) } } }));
-  };
-  onDragEnd = () => {
-    window.removeEventListener('mousemove', this.onDragMove);
-    window.removeEventListener('mouseup', this.onDragEnd);
-    if (this._drag) saveLayout(this.state.layout);
-    this._drag = null;
-  };
-  startResize = (e) => {
-    if (e.button !== undefined && e.button !== 0) return;
-    const id = e.currentTarget.dataset.id;
-    this.bringToFront(id);
-    const l = this.state.layout[id] || DEFAULT_LAYOUT[id];
-    this._resize = { id, startX: e.clientX, startY: e.clientY, origW: l.w, origH: l.h };
-    window.addEventListener('mousemove', this.onResizeMove);
-    window.addEventListener('mouseup', this.onResizeEnd);
-    e.preventDefault(); e.stopPropagation();
-  };
-  onResizeMove = (e) => {
-    if (!this._resize) return;
-    const pct = 100 / this.canvasWidth();
-    const dx = (e.clientX - this._resize.startX) * pct, dy = e.clientY - this._resize.startY, id = this._resize.id;
-    this.setState(s => ({ layout: { ...s.layout, [id]: { ...s.layout[id], w: Math.max(20, Math.min(100, this._resize.origW + dx)), h: Math.max(120, this._resize.origH + dy) } } }));
-  };
-  onResizeEnd = () => {
-    window.removeEventListener('mousemove', this.onResizeMove);
-    window.removeEventListener('mouseup', this.onResizeEnd);
-    if (this._resize) saveLayout(this.state.layout);
-    this._resize = null;
-  };
-  toggleMinimize = (e) => { const id = e.currentTarget.dataset.id; this.setState(s => { const m = { ...s.minimized, [id]: !s.minimized[id] }; saveMin(m); return { minimized: m }; }); };
-  hideWidget = (e) => { const id = e.currentTarget.dataset.id; this.setState(s => { const h = { ...s.hidden, [id]: true }; saveHidden(h); return { hidden: h }; }); };
-  showWidget = (e) => { const id = e.currentTarget.dataset.id; this.setState(s => { const h = { ...s.hidden, [id]: false }; saveHidden(h); return { hidden: h }; }); };
-  resetLayout = () => {
-    const layout = JSON.parse(JSON.stringify(DEFAULT_LAYOUT));
-    saveLayout(layout); saveHidden({}); saveMin({});
-    this.setState({ layout, hidden: {}, minimized: {}, zIndex: {}, zTop: 10 });
-  };
+bringToFront = (id) => { const z = (this.state.zTop || 10) + 1; this.setState(s => ({ zTop: z, zIndex: { ...s.zIndex, [id]: z } })); };
+startDrag = (e) => {
+if (e.button !== undefined && e.button !== 0) return;
+const id = e.currentTarget.dataset.id;
+this.bringToFront(id);
+const l = this.state.layout[id] || DEFAULT_LAYOUT[id];
+this._drag = { id, startX: e.clientX, startY: e.clientY, origX: l.x, origY: l.y };
+window.addEventListener('mousemove', this.onDragMove);
+window.addEventListener('mouseup', this.onDragEnd);
+e.preventDefault();
+};
+onDragMove = (e) => {
+if (!this._drag) return;
+const pct = 100 / this.canvasWidth();
+const dx = (e.clientX - this._drag.startX) * pct, dy = e.clientY - this._drag.startY, id = this._drag.id;
+this.setState(s => ({ layout: { ...s.layout, [id]: { ...s.layout[id], x: Math.max(0, Math.min(100, this._drag.origX + dx)), y: Math.max(0, this._drag.origY + dy) } } }));
+};
+onDragEnd = () => {
+window.removeEventListener('mousemove', this.onDragMove);
+window.removeEventListener('mouseup', this.onDragEnd);
+if (this._drag) saveLayout(this.state.layout);
+this._drag = null;
+};
+startResize = (e) => {
+if (e.button !== undefined && e.button !== 0) return;
+const id = e.currentTarget.dataset.id;
+this.bringToFront(id);
+const l = this.state.layout[id] || DEFAULT_LAYOUT[id];
+this._resize = { id, startX: e.clientX, startY: e.clientY, origW: l.w, origH: l.h };
+window.addEventListener('mousemove', this.onResizeMove);
+window.addEventListener('mouseup', this.onResizeEnd);
+e.preventDefault(); e.stopPropagation();
+};
+onResizeMove = (e) => {
+if (!this._resize) return;
+const pct = 100 / this.canvasWidth();
+const dx = (e.clientX - this._resize.startX) * pct, dy = e.clientY - this._resize.startY, id = this._resize.id;
+this.setState(s => ({ layout: { ...s.layout, [id]: { ...s.layout[id], w: Math.max(20, Math.min(100, this._resize.origW + dx)), h: Math.max(120, this._resize.origH + dy) } } }));
+};
+onResizeEnd = () => {
+window.removeEventListener('mousemove', this.onResizeMove);
+window.removeEventListener('mouseup', this.onResizeEnd);
+if (this._resize) saveLayout(this.state.layout);
+this._resize = null;
+};
+toggleMinimize = (e) => { const id = e.currentTarget.dataset.id; this.setState(s => { const m = { ...s.minimized, [id]: !s.minimized[id] }; saveMin(m); return { minimized: m }; }); };
+hideWidget = (e) => { const id = e.currentTarget.dataset.id; this.setState(s => { const h = { ...s.hidden, [id]: true }; saveHidden(h); return { hidden: h }; }); };
+showWidget = (e) => { const id = e.currentTarget.dataset.id; this.setState(s => { const h = { ...s.hidden, [id]: false }; saveHidden(h); return { hidden: h }; }); };
+resetLayout = () => {
+const layout = JSON.parse(JSON.stringify(DEFAULT_LAYOUT));
+saveLayout(layout); saveHidden({}); saveMin({});
+this.setState({ layout, hidden: {}, minimized: {}, zIndex: {}, zTop: 10 });
+};
 
-  renderVals() {
-    var self=this;
-    var parts=(this.state.cbMonth||'2026-07').split('-'); var yr=Number(parts[0]), mo=Number(parts[1])-1;
-    var hol=bankHolidays(yr); var cbCount=0, holMondays=0;
-    var dim=new Date(yr,mo+1,0).getDate();
-    for(var dd=1;dd<=dim;dd++){ var dt=new Date(yr,mo,dd); if(dt.getDay()===1){ cbCount++; if(hol[iso(dt)]) holMondays++; } }
-    var cbWeekly=Number(this.state.cbWeekly)||0;
-    var cbMonthlyVal=cbWeekly*cbCount;
-    var cbHolidayNote = holMondays>0 ? ' · '+holMondays+' fall on a bank holiday (paid the next working day)' : '';
+renderVals() {
+var self=this;
+var parts=(this.state.cbMonth||'2026-07').split('-'); var yr=Number(parts[0]), mo=Number(parts[1])-1;
+var hol=bankHolidays(yr); var cbCount=0, holMondays=0;
+var dim=new Date(yr,mo+1,0).getDate();
+for(var dd=1;dd<=dim;dd++){ var dt=new Date(yr,mo,dd); if(dt.getDay()===1){ cbCount++; if(hol[iso(dt)]) holMondays++; } }
+var cbWeekly=Number(this.state.cbWeekly)||0;
+var cbMonthlyVal=cbWeekly*cbCount;
+var cbHolidayNote = holMondays>0 ? ' · '+holMondays+' fall on a bank holiday (paid the next working day)' : '';
 
-    var salary=Number(this.state.salary)||0, maint=Number(this.state.maintenance)||0, add=Number(this.state.additional)||0;
-    add += this.state.extraIncome.reduce(function(s,x){return s+(Number(x.amount)||0);},0);
-    var incomeVal = salary + cbMonthlyVal + maint + add;
+var salary=Number(this.state.salary)||0, maint=Number(this.state.maintenance)||0, add=Number(this.state.additional)||0;
+add += this.state.extraIncome.reduce(function(s,x){return s+(Number(x.amount)||0);},0);
+var incomeVal = salary + cbMonthlyVal + maint + add;
 
-    var billsRows=[], billsHeaders=[], billsTotalVal=0, hasBills=false, amtIdx=-1;
-    var raw=this.state.bills;
-    if(raw && raw.length){
-      var header=raw[0]||[];
-      amtIdx=header.length-1;
-      for(var hi=0;hi<header.length;hi++){ if(/amount|total|£|cost|price/i.test(header[hi])){ amtIdx=hi; } }
-      billsHeaders=header.map(function(h,i){ return {label:h||('Col '+(i+1)), align:i===amtIdx?'right':'left'}; });
-      var body=raw.slice(1);
-      billsRows=body.map(function(cells){
-        return { cells: cells.map(function(c,i){
-          if(i===amtIdx){ var n=parseFloat(String(c).replace(/[£$,\s]/g,'')); if(!isNaN(n)){ billsTotalVal+=n; return {text:gbp(n),align:'right'}; } return {text:c,align:'right'}; }
-          return {text:c,align:'left'};
-        }) };
-      });
-      hasBills=billsRows.length>0;
-    }
-
-    var now=new Date();
-    var debts=this.state.debts.map(function(d){
-      var total=Number(d.total)||0, paid=Number(d.paid)||0;
-      var left=Math.max(0,total-paid);
-      var progress= total>0?Math.round(paid/total*100):0;
-      var payoff=new Date(now.getFullYear(), now.getMonth()+1+Math.max(0,left-1), 1);
-      return { id:d.id, name:d.name, balance:d.balance, monthly:d.monthly, rate:d.rate, paidMonths:paid, total:d.total,
-        progress:progress, balanceFmt:gbp(d.balance), monthlyFmt:gbp(d.monthly),
-        payoffDate: left>0 ? payoff.toLocaleDateString('en-GB',{month:'short',year:'numeric'}) : 'Cleared' };
-    });
-
-    var mike=this.state.mike.map(function(m){var pos=m.sign>0;return {id:m.id,item:m.item,amount:m.amount,sign:m.sign,signLabel:pos?'+':'\u2212',signBg:pos?'var(--tint)':'var(--surface)',signColor:pos?'var(--accent-deep)':'var(--muted-strong)'};});
-    var mikeNet=this.state.mike.reduce(function(s,m){return s+m.sign*(Number(m.amount)||0);},0);
-    var mikeNetLabel=mikeNet>0?'Mike owes you '+gbp(mikeNet):mikeNet<0?'You owe Mike '+gbp(-mikeNet):'All square';
-
-    var O=this.state.ot, mult=O.half?1.5:1, hours=Number(O.hours)||0;
-    var otNet=hours*(Number(O.after)||0)*mult, otGross=hours*(Number(O.before)||0)*mult;
-
-    var billFeed = (raw && raw.length > 1) ? raw.slice(1).map(function (cells) {
-      var v = String(cells[amtIdx] || ''); var num = parseFloat(v.replace(/[^0-9.\-]/g, ''));
-      return { name: cells[0] || 'Bill', amount: isNaN(num) ? v : gbp(num) };
-    }).slice(0, 8) : [];
-    var debtsMonthlyVal = this.state.debts.reduce(function(t,d){ return t + (Number(d.monthly)||0); }, 0);
-    var debtsBalanceVal = this.state.debts.reduce(function(t,d){ return t + (Number(d.balance)||0); }, 0);
-    try { localStorage.setItem('halcyon-budget', JSON.stringify({ income: incomeVal, billsTotal: billsTotalVal, debtsMonthly: debtsMonthlyVal, leftOver: incomeVal - billsTotalVal - debtsMonthlyVal, bills: billFeed })); } catch (e) {}
-
-    const w = {};
-    WIDGET_IDS.forEach(id => {
-      const l = this.state.layout[id] || DEFAULT_LAYOUT[id];
-      const minimized = !!this.state.minimized[id];
-      const hidden = !!this.state.hidden[id];
-      const z = this.state.zIndex[id] || 1;
-      w[id] = {
-        style: 'position:absolute;left:' + l.x + '%;top:' + l.y + 'px;width:' + l.w + '%;height:' + (minimized ? 'auto' : (l.h + 'px')) + ';display:' + (hidden ? 'none' : 'flex') + ';flex-direction:column;background:var(--surface2);border:1px solid var(--divider);border-radius:12px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,0.08);z-index:' + z,
-        open: !minimized, minIcon: minimized ? '+' : '\u2212',
-      };
-    });
-    const hiddenList = WIDGET_IDS.filter(id => this.state.hidden[id]).map(id => ({ id, title: WIDGET_TITLES[id] }));
-
-    return {
-      w, hiddenList, hasHidden: hiddenList.length > 0,
-      canvasMinHeight: (WIDGET_IDS.reduce(function (mx, id) {
-        var l = (this.state.layout && this.state.layout[id]) || DEFAULT_LAYOUT[id];
-        var min = this.state.minimized && this.state.minimized[id];
-        var hidden = this.state.hidden && this.state.hidden[id];
-        if (hidden) return mx;
-        return Math.max(mx, l.y + (min ? 60 : l.h));
-      }.bind(this), 0) + 60) + 'px',
-      startDrag: this.startDrag, startResize: this.startResize, toggleMinimize: this.toggleMinimize, hideWidget: this.hideWidget, showWidget: this.showWidget, resetLayout: this.resetLayout, canvasRef: this.canvasRef,
-      themeName:this.state.theme, themeOptions:THEME_OPTIONS, setTheme:this.setTheme, mainTheme: this.state.mainTheme, mainOptions: MAIN_THEMES, setMain: this.setMain,
-      salary:this.state.salary, cbWeekly:this.state.cbWeekly, cbMonth:this.state.cbMonth, maintenance:this.state.maintenance, additional:this.state.additional,
-      extraIncome:this.state.extraIncome, onExtraIncome:this.onExtraIncome, addExtraIncome:this.addExtraIncome, removeExtraIncome:this.removeExtraIncome,
-      cbCount:cbCount, cbMonthly:gbp(cbMonthlyVal), cbHolidayNote:cbHolidayNote,
-      incomeTotal:gbp(incomeVal),
-      billsSheetInput:this.state.billsSheetInput, billsStatus:this.state.billsStatus,
-      billsHeaders:billsHeaders, billsRows:billsRows, billsTotal:gbp(billsTotalVal), hasBills:hasBills, noBills:!hasBills,
-      onBillsInput:this.onBillsInput, syncBills:this.syncBills,
-      debtsMonthlyTotal:gbp(debtsMonthlyVal), debtsBalanceTotal:gbp(debtsBalanceVal),
-      leftOver:gbp(incomeVal-billsTotalVal-debtsMonthlyVal), leftColor:(incomeVal-billsTotalVal-debtsMonthlyVal)<0?'var(--accent-deep)':'var(--text)',
-      debts:debts, onDebt:this.onDebt, addDebtBtn:this.addDebtBtn, removeDebt:this.removeDebt,
-      mike:mike, mikeNetLabel:mikeNetLabel, mikeNetColor:mikeNet<0?'var(--accent-deep)':'var(--text)',
-      onMike:this.onMike, toggleMikeSign:this.toggleMikeSign, addMike:this.addMike, removeMike:this.removeMike,
-      onInc:this.onInc,
-      otDate:O.date, otHours:O.hours, otAfter:O.after, otBefore:O.before,
-      otGross:gbp(otGross), otTax:gbp(otGross-otNet), otNet:gbp(otNet),
-      otHalfState:O.half?'ON':'OFF', otHalfBg:O.half?'var(--accent)':'transparent', otHalfColor:O.half?'var(--bg)':'var(--text)',
-      onOt:this.onOt, toggleHalf:this.toggleHalf,
-    };
-  }
+var billsRows=[], billsHeaders=[], billsTotalVal=0, hasBills=false, amtIdx=-1;
+var raw=this.state.bills;
+if(raw && raw.length){
+var header=raw[0]||[];
+amtIdx=header.length-1;
+for(var hi=0;hi<header.length;hi++){ if(/amount|total|£|cost|price/i.test(header[hi])){ amtIdx=hi; } }
+billsHeaders=header.map(function(h,i){ return {label:h||('Col '+(i+1)), align:i===amtIdx?'right':'left'}; });
+var body=raw.slice(1);
+billsRows=body.map(function(cells){
+return { cells: cells.map(function(c,i){
+if(i===amtIdx){ var n=parseFloat(String(c).replace(/[£$,\s]/g,'')); if(!isNaN(n)){ billsTotalVal+=n; return {text:gbp(n),align:'right'}; } return {text:c,align:'right'}; }
+return {text:c,align:'left'};
+}) };
+});
+hasBills=billsRows.length>0;
 }
-</script>
-</body>
-</html>
+
+var now=new Date();
+var debts=this.state.debts.map(function(d){
+var total=Number(d.total)||0, paid=Number(d.paid)||0;
+var left=Math.max(0,total-paid);
+var progress= total>0?Math.round(paid/total*100):0;
+var payoff=new Date(now.getFullYear(), now.getMonth()+1+Math.max(0,left-1), 1);
+return { id:d.id, name:d.name, balance:d.balance, monthly:d.monthly, rate:d.rate, paidMonths:paid, total:d.total,
+progress:progress, balanceFmt:gbp(d.balance), monthlyFmt:gbp(d.monthly),
+payoffDate: left>0 ? payoff.toLocaleDateString('en-GB',{month:'short',year:'numeric'}) : 'Cleared' };
+});
+
+var mike=this.state.mike.map(function(m){var pos=m.sign>0;return {id:m.id,item:m.item,amount:m.amount,sign:m.sign,signLabel:pos?'+':'\u2212',signBg:pos?'var(--tint)':'var(--surface)',signColor:pos?'var(--accent-deep)':'var(--muted-strong)'};});
+var mikeNet=this.state.mike.reduce(function(s,m){return s+m.sign*(Number(m.amount)||0);},0);
+var mikeNetLabel=mikeNet>0?'Mike owes you '+gbp(mikeNet):mikeNet<0?'You owe Mike '+gbp(-mikeNet):'All square';
+
+
+[output truncated at 50000 of 53842 characters. Pass a larger max_chars (default 50000) to see more, or use read_page with a ref_id to focus on a smaller section.]
