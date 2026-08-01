@@ -148,6 +148,11 @@ html, body { margin: 0; max-width: 100vw; overflow-x: hidden; }
 <sc-if value="{{ billsStatus }}" hint-placeholder-val="{{ false }}">
 <div style="font-size:11px;opacity:0.6;margin-bottom:10px">{{ billsStatus }}</div>
 </sc-if>
+<div style="display:flex;gap:22px;flex-wrap:wrap;margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid var(--hairline)">
+<div><div style="font-size:11px;opacity:0.55;margin-bottom:3px">Income</div><div style="font-family:var(--font);font-weight:800;font-size:17px">{{ incomeTotal }}</div></div>
+<div><div style="font-size:11px;opacity:0.55;margin-bottom:3px">Bills</div><div style="font-family:var(--font);font-weight:800;font-size:17px">{{ billsTotal }}</div></div>
+<div><div style="font-size:11px;opacity:0.55;margin-bottom:3px">Left after bills</div><div style="font-family:var(--font);font-weight:800;font-size:17px;color:{{ billsLeftColor }}">{{ billsLeftOver }}</div></div>
+</div>
 <sc-if value="{{ hasBills }}" hint-placeholder-val="{{ false }}">
 <table style="width:100%;border-collapse:collapse;font-size:13px">
 <thead>
@@ -299,12 +304,12 @@ function saveDebts(v){try{localStorage.setItem('halcyon-debts',JSON.stringify(v)
 function loadMike(){try{var v=JSON.parse(localStorage.getItem('halcyon-mike'));if(Array.isArray(v))return v;}catch(x){}return [];}
 function saveMike(v){try{localStorage.setItem('halcyon-mike',JSON.stringify(v));}catch(x){}return v;}
 function todayISOd(){var d=new Date();var p=function(n){return (n<10?'0':'')+n;};return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate());}
-function loadOt(){var d={date:todayISOd(),after:0,before:0,hours:0,half:false};try{var v=JSON.parse(localStorage.getItem('halcyon-ot'));if(v&&typeof v==='object')return Object.assign(d,v);}catch(x){}return d;}
+function loadOt(){var d={date:todayISOd(),after:0,before:14.50,hours:0,half:false};try{var v=JSON.parse(localStorage.getItem('halcyon-ot'));if(v&&typeof v==='object')return Object.assign(d,v);}catch(x){}return d;}
 function saveOt(v){try{localStorage.setItem('halcyon-ot',JSON.stringify(v));}catch(x){}return v;}
 function saveLS(k,v){try{if(v){localStorage.setItem(k,v);}else{localStorage.removeItem(k);}}catch(x){}}
 const THEME_OPTIONS = [{"value":"riviera","label":"Default"},{"value":"graza","label":"Graza Lime"},{"value":"cody","label":"Cody Green"},{"value":"market","label":"Farmers Market"},{"value":"atnn","label":"ATNN Olive"},{"value":"peachy","label":"Peachy Films"},{"value":"cassjuniper","label":"Cass & Juniper"},{"value":"createheart","label":"Create Heart"},{"value":"spark","label":"Spark Orange"},{"value":"plantme","label":"Plant Me Studio"},{"value":"kildya","label":"Gingham Pink"},{"value":"clodiy","label":"Clo Grid"},{"value":"kriti","label":"Butter Hot"},{"value":"checkermint","label":"Checker Mint"},{"value":"ginghamblue","label":"Gingham Blue"},{"value":"plaidcherry","label":"Plaid Cherry"},{"value":"stripetomato","label":"Stripe Tomato"},{"value":"dotbutter","label":"Dot Butter"},{"value":"gridlilac","label":"Grid Lilac"},{"value":"olivediner","label":"Olive Diner"},{"value":"sunflower","label":"Sunflower Riso"},{"value":"terracotta","label":"Terracotta Market"},{"value":"cobalt","label":"Cobalt Cream"},{"value":"bubblegum","label":"Bubblegum Checker"},{"value":"seafoam","label":"Seafoam Wave"},{"value":"mustardgrid","label":"Mustard Grid"},{"value":"cherrycream","label":"Cherry Cream"},{"value":"lavender","label":"Lavender Stripe"},{"value":"avocado","label":"Avocado Dot"},{"value":"clay","label":"Clay Arch"},{"value":"sorbet","label":"Sorbet Wave"},{"value":"modernist","label":"Modernist"},{"value":"peach","label":"Peach fruity"},{"value":"mutedred","label":"Muted red"},{"value":"planets","label":"Planets"},{"value":"sunshine","label":"Sunshine"},{"value":"disco","label":"Disco 54"},{"value":"speakeasy","label":"Speakeasy 20s"},{"value":"neon80s","label":"80s Neon"},{"value":"havana","label":"Havana Nights"},{"value":"tropicana","label":"Club Tropicana"},{"value":"winter","label":"Winter Wonderland"},{"value":"coquette","label":"Coquette"},{"value":"cleangirl","label":"Clean Girl"},{"value":"celestial","label":"Celestial"},{"value":"teddycafe","label":"Teddy Caf\u00e9"},{"value":"mermaid","label":"Mermaidcore"},{"value":"tomatogirl","label":"Tomato Girl"},{"value":"diner","label":"Diner Doodle"},{"value":"breakfast","label":"Breakfast Club"},{"value":"chili70s","label":"70s Chili"},{"value":"happyhour","label":"Happy Hour"},{"value":"bauhaus","label":"Bauhaus Grid"},{"value":"quiet","label":"Quiet (calm)"},{"value":"oat","label":"Oat (calm)"},{"value":"still","label":"Still (calm)"},{"value":"dim","label":"Dim (calm dark)"},{"value":"w0","label":"Paper"},{"value":"w1","label":"Snow"},{"value":"w2","label":"Cloud"},{"value":"w3","label":"Mono"},{"value":"w4","label":"Mist"},{"value":"g0","label":"Dusty Brick"},{"value":"g1","label":"Faded Jade"},{"value":"g2","label":"Soft Iris"},{"value":"g3","label":"Deep Ochre"},{"value":"g4","label":"Pale Teal"},{"value":"g5","label":"Warm Blush"},{"value":"g6","label":"Cool Fern"},{"value":"g7","label":"Muted Denim"},{"value":"g8","label":"Antique Terracotta"},{"value":"g9","label":"Vintage Jade"},{"value":"g10","label":"Quiet Plum"},{"value":"g11","label":"Dusty Ochre"},{"value":"g12","label":"Faded Lagoon"},{"value":"g13","label":"Soft Brick"},{"value":"g14","label":"Deep Fern"},{"value":"g15","label":"Pale Iris"},{"value":"g16","label":"Warm Terracotta"},{"value":"g17","label":"Cool Teal"},{"value":"g18","label":"Muted Blush"},{"value":"g19","label":"Antique Olive"},{"value":"g20","label":"Vintage Denim"},{"value":"g21","label":"Quiet Brick"},{"value":"g22","label":"Dusty Jade"},{"value":"g23","label":"Faded Iris"},{"value":"g24","label":"Soft Ochre"},{"value":"g25","label":"Deep Lagoon"},{"value":"g26","label":"Pale Blush"},{"value":"g27","label":"Warm Fern"},{"value":"g28","label":"Cool Denim"},{"value":"g29","label":"Muted Terracotta"},{"value":"g30","label":"Antique Teal"},{"value":"g31","label":"Vintage Plum"},{"value":"g32","label":"Quiet Olive"},{"value":"g33","label":"Dusty Lagoon"},{"value":"g34","label":"Faded Brick"},{"value":"g35","label":"Soft Fern"},{"value":"g36","label":"Deep Iris"},{"value":"g37","label":"Pale Ochre"},{"value":"g38","label":"Warm Teal"},{"value":"g39","label":"Cool Blush"},{"value":"g40","label":"Muted Olive"},{"value":"g41","label":"Antique Denim"},{"value":"g42","label":"Vintage Terracotta"},{"value":"g43","label":"Quiet Jade"},{"value":"g44","label":"Dusty Plum"},{"value":"g45","label":"Faded Ochre"},{"value":"g46","label":"Soft Lagoon"}];
 
-function gbp(n){ return '£' + (Number(n)||0).toLocaleString('en-GB',{minimumFractionDigits:2,maximumFractionDigits:2}); }
+function gbp(n){ n=Number(n)||0; var neg=n<0; var abs=Math.abs(n).toLocaleString('en-GB',{minimumFractionDigits:2,maximumFractionDigits:2}); return (neg?'-£':'£')+abs; }
 function pad(n){ return (n<10?'0':'')+n; }
 function iso(d){ return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate()); }
 function easter(y){var a=y%19,b=Math.floor(y/100),c=y%100,d=Math.floor(b/4),e=b%4,f=Math.floor((b+8)/25),g=Math.floor((b-f+1)/3),h=(19*a+b-d-g+15)%30,i=Math.floor(c/4),k=c%4,l=(32+2*e+2*i-h-k)%7,m=Math.floor((a+11*h+22*l)/451),mo=Math.floor((h+l-7*m+114)/31),da=((h+l-7*m+114)%31)+1;return new Date(y,mo-1,da);}
@@ -460,8 +465,9 @@ for(var hi=0;hi<header.length;hi++){ if(/amount|total|£|cost|price/i.test(heade
 billsHeaders=header.map(function(h,i){ return {label:h||('Col '+(i+1)), align:i===amtIdx?'right':'left'}; });
 var body=raw.slice(1);
 billsRows=body.map(function(cells){
+var isMonzo = cells.join(' ').toLowerCase().indexOf('monzo') > -1;
 return { cells: cells.map(function(c,i){
-if(i===amtIdx){ var n=parseFloat(String(c).replace(/[£$,\s]/g,'')); if(!isNaN(n)){ billsTotalVal+=n; return {text:gbp(n),align:'right'}; } return {text:c,align:'right'}; }
+if(i===amtIdx){ var n=parseFloat(String(c).replace(/[£$,\s]/g,'')); if(!isNaN(n)){ if(isMonzo) n = -Math.abs(n); billsTotalVal+=n; return {text:gbp(n),align:'right'}; } return {text:c,align:'right'}; }
 return {text:c,align:'left'};
 }) };
 });
@@ -527,6 +533,7 @@ var mikeNetLabel=mikeNet>0?'Mike owes you '+gbp(mikeNet):mikeNet<0?'You owe Mike
       onBillsInput:this.onBillsInput, syncBills:this.syncBills,
       debtsMonthlyTotal:gbp(debtsMonthlyVal), debtsBalanceTotal:gbp(debtsBalanceVal),
       leftOver:gbp(incomeVal-billsTotalVal-debtsMonthlyVal), leftColor:(incomeVal-billsTotalVal-debtsMonthlyVal)<0?'var(--accent-deep)':'var(--text)',
+      billsLeftOver:gbp(incomeVal-billsTotalVal), billsLeftColor:(incomeVal-billsTotalVal)<0?'var(--accent-deep)':'var(--text)',
       debts:debts, onDebt:this.onDebt, addDebtBtn:this.addDebtBtn, removeDebt:this.removeDebt,
       mike:mike, mikeNetLabel:mikeNetLabel, mikeNetColor:mikeNet<0?'var(--accent-deep)':'var(--text)',
       onMike:this.onMike, toggleMikeSign:this.toggleMikeSign, addMike:this.addMike, removeMike:this.removeMike,
