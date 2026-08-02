@@ -192,6 +192,11 @@ function loadMain(){try{return localStorage.getItem('halcyon-main-v1')||'editori
 function saveMain(k){try{localStorage.setItem('halcyon-main-v1',k);}catch(x){}}
 function loadUni(k){ try { var v = JSON.parse(localStorage.getItem(k)); return Array.isArray(v) ? v : []; } catch (x) { return []; } }
 function saveUni(k,v){ try { localStorage.setItem(k, JSON.stringify(v)); } catch (x) {} }
+var DEFAULT_YEARS = [
+{ year: 'Year 1', score: '' }, { year: 'Year 2', score: '' }, { year: 'Year 3', score: '' },
+{ year: 'Year 4', score: '' }, { year: 'Year 5', score: '' }, { year: 'Year 6', score: '' },
+];
+function loadYears(){ try { var v = JSON.parse(localStorage.getItem('halcyon-uni-years')); if (Array.isArray(v) && v.length) return v; } catch (x) {} return DEFAULT_YEARS.slice(); }
 function loadStudyWidget(){ try{ return JSON.parse(localStorage.getItem('halcyon-study-widget')) || {}; }catch(x){ return {}; } }
 function saveStudyWidget(html,name){ try{ if(html){ localStorage.setItem('halcyon-study-widget', JSON.stringify({html:html,name:name})); } else { localStorage.removeItem('halcyon-study-widget'); } }catch(x){} }
 function loadTheme(){try{return localStorage.getItem('halcyon-theme-v2')||'riviera';}catch(x){return 'riviera';}}
@@ -203,11 +208,11 @@ const THEME_OPTIONS = [{"value":"riviera","label":"Default"},{"value":"graza","l
 const STUDY_PLAN = [];
 
 function classify(avg) {
-if (avg >= 70) return 'First';
-if (avg >= 60) return 'Upper second (2:1)';
-if (avg >= 50) return 'Lower second (2:2)';
-if (avg >= 40) return 'Third';
-return 'Below pass';
+if (avg >= 85) return 'First (Grade 1)';
+if (avg >= 70) return 'Pass Grade 2';
+if (avg >= 55) return 'Pass Grade 3';
+if (avg >= 40) return 'Pass Grade 4';
+return 'Fail';
 }
 
 class Component extends DCLogic {
@@ -215,19 +220,16 @@ state = {
 theme: loadTheme(), mainTheme: loadMain(),
 newTodo: '',
 todos: loadUni('halcyon-uni-todos'),
-results: [],
+results: loadUni('halcyon-uni-results'),
 rName: '', rScore: '', rWeight: '',
 studyWidget: loadStudyWidget().html || '', widgetName: loadStudyWidget().name || '',
 findText: '', replaceText: '', dateEditNote: '',
 plan: loadUni('halcyon-uni-plan'),
 planPrompt: false,
-years: [
-{ year: 'Year 1', score: '' }, { year: 'Year 2', score: '' }, { year: 'Year 3', score: '' },
-{ year: 'Year 4', score: '' }, { year: 'Year 5', score: '' }, { year: 'Year 6', score: '' },
-],
+years: loadYears(),
 };
 
-componentDidUpdate(prev){ if (!prev) return; if (prev.todos !== this.state.todos) saveUni('halcyon-uni-todos', this.state.todos); if (prev.plan !== this.state.plan) saveUni('halcyon-uni-plan', this.state.plan); }
+componentDidUpdate(prev){ if (!prev) return; if (prev.todos !== this.state.todos) saveUni('halcyon-uni-todos', this.state.todos); if (prev.plan !== this.state.plan) saveUni('halcyon-uni-plan', this.state.plan); if (prev.results !== this.state.results) saveUni('halcyon-uni-results', this.state.results); if (prev.years !== this.state.years) saveUni('halcyon-uni-years', this.state.years); }
 
 removePlan = (e) => { const id = Number(e.currentTarget.dataset.id); this.setState(s => ({ plan: s.plan.filter(p => p.id !== id), planPrompt: true })); };
 reshufflePlan = () => { const DAYS = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun']; this.setState(s => ({ plan: s.plan.map((p, i) => ({ ...p, day: DAYS[i % 7] })), planPrompt: false })); };

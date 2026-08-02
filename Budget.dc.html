@@ -181,6 +181,42 @@ html, body { margin: 0; max-width: 100vw; overflow-x: hidden; }
 <div data-id="bills" onMouseDown="{{ startResize }}" style="position:absolute;right:2px;bottom:2px;width:14px;height:14px;cursor:nwse-resize;opacity:0.45;background:linear-gradient(135deg,transparent 50%,var(--muted) 50%);border-radius:0 0 4px 0"></div>
 </div>
 
+<div class="widget" style="{{ w.recurring.style }}">
+<div data-id="recurring" onMouseDown="{{ startDrag }}" style="cursor:grab;display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid var(--divider);user-select:none;flex:none;background:var(--surface);border-radius:12px 12px 0 0">
+<span style="flex:1;font-weight:800;font-size:13px">Recurring · {{ recurringTotal }}</span>
+<button data-id="recurring" onClick="{{ toggleMinimize }}" aria-label="Minimize" style="width:22px;height:22px;flex:none;font-family:var(--font);font-size:14px;line-height:1;background:transparent;border:1px solid var(--divider);border-radius:6px;color:var(--text);cursor:pointer;padding:0">{{ w.recurring.minIcon }}</button>
+<button data-id="recurring" onClick="{{ hideWidget }}" aria-label="Hide" style="width:22px;height:22px;flex:none;font-family:var(--font);font-size:14px;line-height:1;background:transparent;border:1px solid var(--divider);border-radius:6px;color:var(--text);cursor:pointer;padding:0">&times;</button>
+</div>
+<sc-if value="{{ w.recurring.open }}" hint-placeholder-val="{{ true }}">
+<div style="padding:16px;overflow:auto;flex:1">
+<p style="font-size:11px;opacity:0.55;margin:0 0 10px">Repeats every month. Counts against your "Left after bills" total. Tick when paid.</p>
+<sc-if value="{{ hasRecurring }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;flex-direction:column;gap:0;margin-bottom:12px">
+<sc-for list="{{ recurringRows }}" as="r" hint-placeholder-count="3">
+<div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--hairline);opacity:{{ r.rowOpacity }}">
+<button data-id="{{ r.id }}" onClick="{{ toggleRecurringPaid }}" aria-label="Mark paid this month" style="width:18px;height:18px;flex:none;border:1.5px solid var(--divider);border-radius:6px;background:{{ r.paidBg }};cursor:pointer;padding:0"></button>
+<input value="{{ r.name }}" data-id="{{ r.id }}" data-field="name" onChange="{{ onRecurringField }}" style="flex:1;min-width:0;font-family:var(--font);font-size:13px;padding:6px 8px;border:1px solid var(--divider);border-radius:6px;background:var(--surface);color:var(--text)">
+<div style="display:flex;align-items:center;gap:2px;flex:none"><span style="opacity:0.6;font-size:13px">£</span><input value="{{ r.amount }}" data-id="{{ r.id }}" data-field="amount" onChange="{{ onRecurringField }}" type="number" step="0.01" style="width:80px;text-align:right;font-family:var(--font);font-size:13px;padding:6px 8px;border:1px solid var(--divider);border-radius:6px;background:var(--surface);color:var(--text)"></div>
+<label style="font-size:11px;opacity:0.7;flex:none">Day<input value="{{ r.day }}" data-id="{{ r.id }}" data-field="day" onChange="{{ onRecurringField }}" type="number" min="1" max="31" style="width:44px;margin-left:3px;font-family:var(--font);font-size:13px;padding:6px 6px;border:1px solid var(--divider);border-radius:6px;background:var(--surface);color:var(--text)"></label>
+<button data-id="{{ r.id }}" onClick="{{ removeRecurring }}" aria-label="Remove recurring bill" style="flex:none;font-size:15px;line-height:1;color:var(--muted);background:transparent;border:none;cursor:pointer;padding:2px 4px">×</button>
+</div>
+</sc-for>
+</div>
+</sc-if>
+<sc-if value="{{ noRecurring }}" hint-placeholder-val="{{ true }}">
+<p style="font-size:13px;opacity:0.6;margin:0 0 12px">No recurring bills yet — add rent, subscriptions, phone plans etc below.</p>
+</sc-if>
+<div style="display:flex;gap:8px;flex-wrap:wrap">
+<input value="{{ rbName }}" onChange="{{ onRbName }}" placeholder="Name (e.g. Rent)" style="flex:1;min-width:120px;font-family:var(--font);font-size:13px;padding:7px 10px;border:1px solid var(--divider);border-radius:6px;background:var(--surface);color:var(--text)">
+<input value="{{ rbAmount }}" onChange="{{ onRbAmount }}" type="number" step="0.01" placeholder="£" style="width:80px;font-family:var(--font);font-size:13px;padding:7px 10px;border:1px solid var(--divider);border-radius:6px;background:var(--surface);color:var(--text)">
+<input value="{{ rbDay }}" onChange="{{ onRbDay }}" type="number" min="1" max="31" placeholder="Day" style="width:64px;font-family:var(--font);font-size:13px;padding:7px 10px;border:1px solid var(--divider);border-radius:6px;background:var(--surface);color:var(--text)">
+<button onClick="{{ addRecurring }}" style="font-family:var(--font);font-weight:800;font-size:13px;padding:7px 14px;cursor:pointer;background:var(--accent);color:var(--bg);border:none;border-radius:6px">Add</button>
+</div>
+</div>
+</sc-if>
+<div data-id="recurring" onMouseDown="{{ startResize }}" style="position:absolute;right:2px;bottom:2px;width:14px;height:14px;cursor:nwse-resize;opacity:0.45;background:linear-gradient(135deg,transparent 50%,var(--muted) 50%);border-radius:0 0 4px 0"></div>
+</div>
+
 <div class="widget" style="{{ w.debts.style }}">
 <div data-id="debts" onMouseDown="{{ startDrag }}" style="cursor:grab;display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid var(--divider);user-select:none;flex:none;background:var(--surface);border-radius:12px 12px 0 0">
 <span style="flex:1;font-weight:800;font-size:13px">Debts</span>
@@ -241,7 +277,8 @@ html, body { margin: 0; max-width: 100vw; overflow-x: hidden; }
 </div>
 </sc-for>
 <button onClick="{{ addMike }}" style="margin-top:12px;font-family:var(--font);font-weight:800;font-size:13px;padding:8px 16px;cursor:pointer;background:transparent;color:var(--accent);border:1px solid var(--divider);border-radius:8px">Add row</button>
-<p style="font-size:11px;opacity:0.55;margin:12px 0 0;line-height:1.5"><strong>+</strong> Mike owes you · <strong>−</strong> you owe Mike. All editable.</p>
+<p style="font-size:15px;font-weight:800;margin:16px 0 4px;color:{{ mikeNetColor }}">{{ mikeNetLabel }}</p>
+<p style="font-size:11px;opacity:0.55;margin:0;line-height:1.5"><strong>+</strong> Mike owes you · <strong>−</strong> you owe Mike. All editable.</p>
 </div>
 </sc-if>
 <div data-id="shared" onMouseDown="{{ startResize }}" style="position:absolute;right:2px;bottom:2px;width:14px;height:14px;cursor:nwse-resize;opacity:0.45;background:linear-gradient(135deg,transparent 50%,var(--muted) 50%);border-radius:0 0 4px 0"></div>
@@ -301,6 +338,11 @@ function loadDebts(){try{var v=JSON.parse(localStorage.getItem('halcyon-debts'))
 try{localStorage.setItem('halcyon-debts',JSON.stringify(DEBT_SEED));}catch(x){}
 return DEBT_SEED.slice();}
 function saveDebts(v){try{localStorage.setItem('halcyon-debts',JSON.stringify(v));}catch(x){}return v;}
+function loadRecurring(){try{var v=JSON.parse(localStorage.getItem('halcyon-recurring'));if(Array.isArray(v))return v;}catch(x){}return [];}
+function saveRecurring(v){try{localStorage.setItem('halcyon-recurring',JSON.stringify(v));}catch(x){}return v;}
+function loadRecurringPaid(){try{var v=JSON.parse(localStorage.getItem('halcyon-recurring-paid'));if(v&&typeof v==='object')return v;}catch(x){}return {};}
+function saveRecurringPaid(v){try{localStorage.setItem('halcyon-recurring-paid',JSON.stringify(v));}catch(x){}return v;}
+function monthKey(){var d=new Date();return d.getFullYear()+'-'+((d.getMonth()+1)<10?'0':'')+(d.getMonth()+1);}
 function loadMike(){try{var v=JSON.parse(localStorage.getItem('halcyon-mike'));if(Array.isArray(v))return v;}catch(x){}return [];}
 function saveMike(v){try{localStorage.setItem('halcyon-mike',JSON.stringify(v));}catch(x){}return v;}
 function todayISOd(){var d=new Date();var p=function(n){return (n<10?'0':'')+n;};return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate());}
@@ -321,13 +363,14 @@ var e=easter(y);var out={};
 return out;
 }
 
-const WIDGET_IDS = ['summary','income','bills','debts','shared','overtime'];
-const WIDGET_TITLES = { summary:'This month', income:'Income', bills:'Bills', debts:'Debts', shared:'Shared — Me & Mike', overtime:'Overtime & tax' };
+const WIDGET_IDS = ['summary','income','bills','recurring','debts','shared','overtime'];
+const WIDGET_TITLES = { summary:'This month', income:'Income', bills:'Bills', recurring:'Recurring bills', debts:'Debts', shared:'Shared — Me & Mike', overtime:'Overtime & tax' };
 const DEFAULT_LAYOUT = {
 summary: { x: 0, y: 0, w: 100, h: 150 },
 income: { x: 0, y: 170, w: 55, h: 520 },
 bills: { x: 56.5, y: 170, w: 43.5, h: 330 },
-debts: { x: 56.5, y: 520, w: 43.5, h: 1835 },
+recurring: { x: 56.5, y: 520, w: 43.5, h: 360 },
+debts: { x: 56.5, y: 900, w: 43.5, h: 1835 },
 shared: { x: 0, y: 710, w: 55, h: 400 },
 overtime: { x: 0, y: 1130, w: 55, h: 330 },
 };
@@ -346,6 +389,7 @@ theme: loadTheme(), mainTheme: loadMain(),
 extraIncome: loadExtraInc(),
 billsSheet: loadLS('halcyon-bills-sheet'), billsSheetInput: loadLS('halcyon-bills-sheet'), bills: null, billsStatus: '',
 debts: loadDebts(),
+recurring: loadRecurring(), recurringPaid: loadRecurringPaid(), rbName: '', rbAmount: '', rbDay: '',
 mike: loadMike(),
 ot: loadOt(),
 layout: loadLayout(), minimized: loadMin(), hidden: loadHidden(), zIndex: {}, zTop: 10,
@@ -374,6 +418,21 @@ self.setState({bills:rows, billsSheet:url, billsStatus:'Synced '+Math.max(0,rows
 syncBills = () => { var u=(this.state.billsSheetInput||'').trim(); if(!u){this.setState({billsStatus:'Paste your published sheet CSV link first.'});return;} this.doBills(u); };
 
 onDebt = (e) => { var id=Number(e.currentTarget.dataset.id), f=e.currentTarget.dataset.field, v=e.target.value; this.setState(function(s){return {debts:saveDebts(s.debts.map(function(d){return d.id===id?Object.assign({},d,{[f]:v}):d;}))};}); };
+
+onRbName = (e) => this.setState({ rbName: e.target.value });
+onRbAmount = (e) => this.setState({ rbAmount: e.target.value });
+onRbDay = (e) => this.setState({ rbDay: e.target.value });
+addRecurring = () => {
+var name=(this.state.rbName||'').trim(); if(!name) return;
+var amount=Number(this.state.rbAmount)||0; var day=Number(this.state.rbDay)||1;
+this.setState(function(s){return {recurring:saveRecurring(s.recurring.concat([{id:Date.now(),name:name,amount:amount,day:day}])), rbName:'', rbAmount:'', rbDay:''};});
+};
+removeRecurring = (e) => { var id=Number(e.currentTarget.dataset.id); this.setState(function(s){return {recurring:saveRecurring(s.recurring.filter(function(r){return r.id!==id;}))};}); };
+onRecurringField = (e) => { var id=Number(e.currentTarget.dataset.id), f=e.currentTarget.dataset.field, v=e.target.value; this.setState(function(s){return {recurring:saveRecurring(s.recurring.map(function(r){return r.id===id?Object.assign({},r,{[f]:v}):r;}))};}); };
+toggleRecurringPaid = (e) => {
+var id=e.currentTarget.dataset.id; var key=monthKey()+':'+id;
+this.setState(function(s){var p=Object.assign({},s.recurringPaid); p[key]=!p[key]; return {recurringPaid:saveRecurringPaid(p)};});
+};
 addDebtBtn = (e) => { e.stopPropagation(); this.setState(function(s){return {debts:saveDebts(s.debts.concat([{id:Date.now(),name:'New debt',balance:0,monthly:0,rate:0,paid:0,total:12,original:0}]))};}); };
 removeDebt = (e) => { var id=Number(e.currentTarget.dataset.id); this.setState(function(s){return {debts:saveDebts(s.debts.filter(function(d){return d.id!==id;}))};}); };
 
@@ -498,7 +557,13 @@ var mikeNetLabel=mikeNet>0?'Mike owes you '+gbp(mikeNet):mikeNet<0?'You owe Mike
     }).slice(0, 8) : [];
     var debtsMonthlyVal = this.state.debts.reduce(function(t,d){ return t + (Number(d.monthly)||0); }, 0);
     var debtsBalanceVal = this.state.debts.reduce(function(t,d){ return t + (Number(d.balance)||0); }, 0);
-    try { localStorage.setItem('halcyon-budget', JSON.stringify({ income: incomeVal, billsTotal: billsTotalVal, debtsMonthly: debtsMonthlyVal, leftOver: incomeVal - billsTotalVal - debtsMonthlyVal, bills: billFeed })); } catch (e) {}
+    var recurringTotalVal = this.state.recurring.reduce(function(t,r){ return t + (Number(r.amount)||0); }, 0);
+    var mk = monthKey();
+    var recurringRows = this.state.recurring.slice().sort(function(a,b){ return (Number(a.day)||0) - (Number(b.day)||0); }).map(function(r){
+      var paid = !!self.state.recurringPaid[mk+':'+r.id];
+      return { id:r.id, name:r.name, amount:r.amount, day:r.day, paid:paid, paidBg: paid?'var(--accent)':'transparent', rowOpacity: paid?0.5:1 };
+    });
+    try { localStorage.setItem('halcyon-budget', JSON.stringify({ income: incomeVal, billsTotal: billsTotalVal, debtsMonthly: debtsMonthlyVal, recurringTotal: recurringTotalVal, leftOver: incomeVal - billsTotalVal - debtsMonthlyVal - recurringTotalVal, bills: billFeed })); } catch (e) {}
 
     const w = {};
     WIDGET_IDS.forEach(id => {
@@ -532,8 +597,12 @@ var mikeNetLabel=mikeNet>0?'Mike owes you '+gbp(mikeNet):mikeNet<0?'You owe Mike
       billsHeaders:billsHeaders, billsRows:billsRows, billsTotal:gbp(billsTotalVal), hasBills:hasBills, noBills:!hasBills,
       onBillsInput:this.onBillsInput, syncBills:this.syncBills,
       debtsMonthlyTotal:gbp(debtsMonthlyVal), debtsBalanceTotal:gbp(debtsBalanceVal),
-      leftOver:gbp(incomeVal-billsTotalVal-debtsMonthlyVal), leftColor:(incomeVal-billsTotalVal-debtsMonthlyVal)<0?'var(--accent-deep)':'var(--text)',
+      leftOver:gbp(incomeVal-billsTotalVal-debtsMonthlyVal-recurringTotalVal), leftColor:(incomeVal-billsTotalVal-debtsMonthlyVal-recurringTotalVal)<0?'var(--accent-deep)':'var(--text)',
       billsLeftOver:gbp(incomeVal-billsTotalVal), billsLeftColor:(incomeVal-billsTotalVal)<0?'var(--accent-deep)':'var(--text)',
+      recurringTotal:gbp(recurringTotalVal), recurringRows:recurringRows, hasRecurring:recurringRows.length>0, noRecurring:recurringRows.length===0,
+      rbName:this.state.rbName, rbAmount:this.state.rbAmount, rbDay:this.state.rbDay,
+      onRbName:this.onRbName, onRbAmount:this.onRbAmount, onRbDay:this.onRbDay, addRecurring:this.addRecurring, removeRecurring:this.removeRecurring,
+      onRecurringField:this.onRecurringField, toggleRecurringPaid:this.toggleRecurringPaid,
       debts:debts, onDebt:this.onDebt, addDebtBtn:this.addDebtBtn, removeDebt:this.removeDebt,
       mike:mike, mikeNetLabel:mikeNetLabel, mikeNetColor:mikeNet<0?'var(--accent-deep)':'var(--text)',
       onMike:this.onMike, toggleMikeSign:this.toggleMikeSign, addMike:this.addMike, removeMike:this.removeMike,
