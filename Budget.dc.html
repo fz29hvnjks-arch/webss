@@ -526,7 +526,7 @@ var body=raw.slice(1);
 billsRows=body.map(function(cells){
 var isMonzo = cells.join(' ').toLowerCase().indexOf('monzo') > -1;
 return { cells: cells.map(function(c,i){
-if(i===amtIdx){ var n=parseFloat(String(c).replace(/[£$,\s]/g,'')); if(!isNaN(n)){ if(isMonzo) n = -Math.abs(n); billsTotalVal+=n; return {text:gbp(n),align:'right'}; } return {text:c,align:'right'}; }
+if(i===amtIdx){ var n=parseFloat(String(c).replace(/[£$,\s]/g,'')); if(!isNaN(n)){ n = Math.abs(n); billsTotalVal+=n; return {text:(isMonzo?'-':'')+gbp(n),align:'right'}; } return {text:c,align:'right'}; }
 return {text:c,align:'left'};
 }) };
 });
