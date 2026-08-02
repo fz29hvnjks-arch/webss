@@ -102,7 +102,7 @@ html, body { margin: 0; max-width: 100vw; overflow-x: hidden; }
 </div>
 <label style="display:inline-block;font-family:var(--font);font-weight:800;font-size:13px;padding:9px 16px;cursor:pointer;background:transparent;color:var(--accent);border:1px solid var(--divider);border-radius:8px">
 Upload / replace HTML
-<input type="file" accept=".html,text/html" onChange="{{ onWidgetFile }}" style="display:none">
+<input type="file" accept=".html,text/html" onChange="{{ onWidgetFile }}" ref="{{ fileInputRef }}" style="display:none">
 </label>
 </div>
 <p style="font-size:12px;opacity:0.6;margin:0 0 14px;line-height:1.5">Your study-plan widget, shown full size. Upload a new HTML file any time to replace it.</p>
@@ -265,6 +265,12 @@ this.setState({ studyWidget: html, widgetName: file.name, dateEditNote: '' });
 reader.readAsText(file);
 };
 
+fileInputRef = (el) => {
+if (!el || el.__wired) return;
+el.__wired = true;
+el.addEventListener('change', (e) => { this.onWidgetFile(e); });
+};
+
 onFindText = (e) => this.setState({ findText: e.target.value });
 onReplaceText = (e) => this.setState({ replaceText: e.target.value });
 applyDateEdit = () => {
@@ -310,6 +316,7 @@ overallLabel: yearsFilled.length ? oAvg + '%' : '—', overallClass: yearsFilled
 hasWidget: !!this.state.studyWidget, noWidget: !this.state.studyWidget, studyWidget: this.state.studyWidget, widgetName: this.state.widgetName,
 displayName: this.state.widgetName || "Jo's study plan",
 findText: this.state.findText, replaceText: this.state.replaceText, onFindText: this.onFindText, onReplaceText: this.onReplaceText, applyDateEdit: this.applyDateEdit, dateEditNote: this.state.dateEditNote,
+fileInputRef: this.fileInputRef,
 };
 }
 }
